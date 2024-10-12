@@ -3,7 +3,7 @@ name = "InterestMath"
 edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
 license = "MIT"           # e.g., "MIT", "GPL", "Apache 2.0"
 authors = ["Jose Cerqueira (jose@interestprotocol.com)"]     
-publish_at = "0x827cf89500e4df1b5491cc314ae917126a42393579cca1911bf4d5903194d1b0"
+published-at = "0x827cf89500e4df1b5491cc314ae917126a42393579cca1911bf4d5903194d1b0"
 
 [dependencies]
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/mainnet" }
