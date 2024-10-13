@@ -3,12 +3,8 @@ module interest_math::int;
 
 use interest_math::u256;
 
-// === Friend modules ===
-
-/* friend suitears::math64; */
-
-
 // === Constants ===
+
 // @dev Maximum i256 as u256. We need one bit for the sign. 0 positive / 1 negative.
 const MAX_I256_AS_U256: u256 =
     0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
