@@ -549,3 +549,12 @@ public fun log256_up(x: u256): u8 {
     let r = log256_down(x);
     r + if (1 << ((r << 3)) < x) 1 else 0
 }
+
+/*
+ * @notice Returns the maximum value of u256.
+ *
+ * @return u256. The maximum value.
+ */
+public fun max_value(): u256 {
+    MAX_U256
+}

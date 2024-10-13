@@ -6,7 +6,7 @@ use interest_math::{int, u256};
 // === Constants ===
 
 // @dev The maximum u64 number.
-const MAX_U64: u256 = 18446744073709551615;
+const MAX_U64: u256 = 0xFFFFFFFFFFFFFFFF;
 
 // @dev MAX_U64 + 1.
 const WRAPPING_MAX: u256 = 18446744073709551616;
@@ -464,4 +464,13 @@ public fun log256_down(x: u64): u8 {
  */
 public fun log256_up(x: u64): u8 {
     u256::log256_up((x as u256))
+}
+
+/*
+ * @notice Returns the maximum value of u64.
+ *
+ * @return u64. The maximum value.
+ */
+public fun max_value(): u64 {
+    (MAX_U64 as u64)
 }

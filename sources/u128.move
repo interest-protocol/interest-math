@@ -6,7 +6,7 @@ use interest_math::u256;
 // === Constants ===
 
 // @dev The maximum u128 number.
-const MAX_U128: u256 = 340282366920938463463374607431768211455;
+const MAX_U128: u256 = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
 
 // === Try Functions do not throw ===
 
@@ -418,4 +418,13 @@ public fun log256_down(x: u128): u8 {
  */
 public fun log256_up(x: u128): u8 {
     u256::log256_up((x as u256))
+}
+
+/*
+ * @notice Returns the maximum value of u128.
+ *
+ * @return u128. The maximum value.
+ */
+public fun max_value(): u128 {
+    (MAX_U128 as u128)
 }
