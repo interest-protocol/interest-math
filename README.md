@@ -4,7 +4,7 @@
 
 ### It contains the following modules:
 
--   `fixed_point_wad`: Fixed point arithmetic for interest calculations.
+-   `fixed_point_wad`: Fixed point arithmetic with 1e18 precision.
 -   `u64`: Utility functions for u64.
 -   `u128`: Utility functions for u128.
 -   `u256`: Utility functions for u256.
