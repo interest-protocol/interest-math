@@ -1,13 +1,11 @@
 module interest_math::int;
-// === Imports ===
 
 use interest_math::u256;
 
 // === Constants ===
 
 // @dev Maximum i256 as u256. We need one bit for the sign. 0 positive / 1 negative.
-const MAX_I256_AS_U256: u256 =
-    0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+const MAX_I256_AS_U256: u256 = 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
 // @dev Maximum u256 number.
 
 const MAX_U256: u256 = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
@@ -53,7 +51,7 @@ public fun value(self: Int): u256 {
  * @return Int. The wrapped value.
  */
 public fun zero(): Int {
-    Int {value: 0}
+    Int { value: 0 }
 }
 
 /*
@@ -62,7 +60,7 @@ public fun zero(): Int {
  * @return Int. The wrapped value.
  */
 public fun one(): Int {
-    Int {value: 1}
+    Int { value: 1 }
 }
 
 /*
@@ -71,7 +69,7 @@ public fun one(): Int {
  * @return Int. The wrapped value.
  */
 public fun max(): Int {
-    Int {value: MAX_I256_AS_U256}
+    Int { value: MAX_I256_AS_U256 }
 }
 
 /*
@@ -81,7 +79,7 @@ public fun max(): Int {
  * @return Int. The wrapped `value`.
  */
 public fun from_u8(value: u8): Int {
-    Int {value: (value as u256)}
+    Int { value: (value as u256) }
 }
 
 /*
@@ -91,7 +89,7 @@ public fun from_u8(value: u8): Int {
  * @return Int. The wrapped `value`.
  */
 public fun from_u16(value: u16): Int {
-    Int {value: (value as u256)}
+    Int { value: (value as u256) }
 }
 
 /*
@@ -101,7 +99,7 @@ public fun from_u16(value: u16): Int {
  * @return Int. The wrapped `value`.
  */
 public fun from_u32(value: u32): Int {
-    Int {value: (value as u256)}
+    Int { value: (value as u256) }
 }
 
 /*
@@ -111,7 +109,7 @@ public fun from_u32(value: u32): Int {
  * @return Int. The wrapped `value`.
  */
 public fun from_u64(value: u64): Int {
-    Int {value: (value as u256)}
+    Int { value: (value as u256) }
 }
 
 /*
@@ -121,7 +119,7 @@ public fun from_u64(value: u64): Int {
  * @return Int. The wrapped `value`.
  */
 public fun from_u128(value: u128): Int {
-    Int {value: (value as u256)}
+    Int { value: (value as u256) }
 }
 
 /*
@@ -135,7 +133,7 @@ public fun from_u128(value: u128): Int {
  */
 public fun from_u256(value: u256): Int {
     assert!(value <= MAX_I256_AS_U256, EConversionFromU256Overflow);
-    Int {value: value}
+    Int { value: value }
 }
 
 /*
@@ -670,7 +668,7 @@ public fun mod(a: Int, b: Int): Int {
 public fun pow(base: Int, exponent: u256): Int {
     let raw_value = u256::pow(abs(base).value, exponent);
     assert!(raw_value <= MAX_I256_AS_U256, EConversionFromU256Overflow);
-    let result = Int {value: raw_value};
+    let result = Int { value: raw_value };
     if (is_neg(base) && exponent % 2 != 0) flip(result) else result
 }
 
@@ -699,7 +697,7 @@ public fun shr(self: Int, rhs: u8): Int {
  * @return Int. The result of `self` << `lhs`.
  */
 public fun shl(self: Int, lhs: u8): Int {
-    Int {value: self.value << lhs}
+    Int { value: self.value << lhs }
 }
 
 /*
@@ -709,7 +707,7 @@ public fun shl(self: Int, lhs: u8): Int {
  * @return Int. The result of `a` | `b`.
  */
 public fun or(a: Int, b: Int): Int {
-    Int {value: a.value | b.value}
+    Int { value: a.value | b.value }
 }
 
 /*
@@ -719,7 +717,7 @@ public fun or(a: Int, b: Int): Int {
  * @return Int. The result of `a` & `b`.
  */
 public fun and(a: Int, b: Int): Int {
-    Int {value: a.value & b.value}
+    Int { value: a.value & b.value }
 }
 
 // === Friend only function ===

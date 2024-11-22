@@ -1,7 +1,4 @@
 module interest_math::u256;
-// === Imports ===
-
-// === Constants ===
 
 // @dev Maximum U256 number
 const MAX_U256: u256 = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
