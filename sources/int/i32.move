@@ -32,7 +32,7 @@ public struct I32 has copy, drop, store {
     value: u32,
 }
 
-// === Package Functions ===
+// === Public Functions ===
 
 public fun value(self: I32): u32 {
     macro::value!(self)
@@ -63,10 +63,10 @@ public fun from_u128(value: u128): I32 {
 }
 
 public fun negative_from_u32(value: u32): I32 {
-    negative_from(value as u64)
+    negative_from_u64(value as u64)
 }
 
-public fun negative_from(value: u64): I32 {
+public fun negative_from_u64(value: u64): I32 {
     if (value == 0) return zero();
 
     I32 {
@@ -75,7 +75,7 @@ public fun negative_from(value: u64): I32 {
 }
 
 public fun negative_from_u128(value: u128): I32 {
-    negative_from(value as u64)
+    negative_from_u64(value as u64)
 }
 
 public fun to_u32(self: I32): u32 {

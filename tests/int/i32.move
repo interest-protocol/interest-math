@@ -1,7 +1,7 @@
 #[test_only]
 module interest_math::i32_tests;
 
-use interest_math::i32::{Self, from_u32, negative_from};
+use interest_math::i32::{Self, from_u32, negative_from_u64 as negative_from};
 use sui::test_utils::assert_eq;
 
 #[test]

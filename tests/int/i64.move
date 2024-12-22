@@ -284,6 +284,126 @@ fun test_mod() {
     assert_eq(mod(from_u64(1234567890), from_u64(987654321)), from_u64(246913569));
 }
 
+#[test]
+fun test_wrapping_add() {
+    // Basic positive number addition
+    assert_eq(from_u64(5).wrapping_add(from_u64(3)), from_u64(8));
+
+    // Adding Zero
+    assert_eq(from_u64(42).wrapping_add(from_u64(0)), from_u64(42));
+
+    // Negative number (in two's complement)
+    assert_eq(
+        negative_from_u64(2).wrapping_add(negative_from_u64(3)),
+        negative_from_u64(5),
+    );
+
+    // Mixed positive and negative numbers
+    assert_eq(
+        from_u64(10).wrapping_add(negative_from_u64(15)),
+        negative_from_u64(5),
+    );
+    assert_eq(
+        negative_from_u64(10).wrapping_add(from_u64(15)),
+        from_u64(5),
+    );
+
+    // Maximum overflow
+    assert_eq(i64::max().wrapping_add(from_u64(1)), i64::min());
+    assert_eq(
+        i64::max().wrapping_add(from_u64(5)),
+        i64::min().wrapping_add(from_u64(4)),
+    );
+
+    // Minimum underflow
+    assert_eq(
+        i64::min().wrapping_add(negative_from_u64(1)),
+        i64::max(),
+    );
+    assert_eq(
+        i64::min().wrapping_add(negative_from_u64(5)),
+        i64::max().wrapping_add(negative_from_u64(4)),
+    );
+
+    // Maximum + Maximum
+    assert_eq(
+        i64::max().wrapping_add(i64::max()),
+        negative_from_u64(2),
+    );
+
+    // Minimum + Minimum
+    assert_eq(i64::min().wrapping_add(i64::min()), from_u64(0));
+
+    // Any number - 1 should decrement the number
+    assert_eq(
+        from_u64(123).wrapping_add(negative_from_u64(1)),
+        from_u64(122),
+    );
+
+    // Zero + Any number should be the same number
+    assert_eq(from_u64(123).wrapping_add(from_u64(0)), from_u64(123));
+}
+
+#[test]
+fun test_wrapping_sub() {
+    // Basic positive subtraction
+    assert_eq(from_u64(8).wrapping_sub(from_u64(3)), from_u64(5));
+
+    // Subtracting zero
+    assert_eq(from_u64(8).wrapping_sub(from_u64(0)), from_u64(8));
+    assert_eq(
+        from_u64(0).wrapping_sub(from_u64(8)),
+        negative_from_u64(8),
+    );
+    assert_eq(from_u64(0).wrapping_sub(from_u64(0)), from_u64(0));
+    assert_eq(
+        negative_from_u64(0).wrapping_sub(from_u64(0)),
+        negative_from_u64(0),
+    );
+
+    // Subtracting a negative number
+    assert_eq(
+        negative_from_u64(5).wrapping_sub(negative_from_u64(3)),
+        negative_from_u64(2),
+    );
+
+    // Positive and negative subtraction
+    assert_eq(
+        from_u64(5).wrapping_sub(negative_from_u64(3)),
+        from_u64(8),
+    );
+    assert_eq(
+        negative_from_u64(5).wrapping_sub(from_u64(3)),
+        negative_from_u64(8),
+    );
+
+    // Subtracting a larger number
+    assert_eq(
+        from_u64(8).wrapping_sub(from_u64(11)),
+        negative_from_u64(3),
+    );
+
+    // Subtracting a negative number from_u32 a positive number
+    assert_eq(
+        negative_from_u64(5).wrapping_sub(from_u64(3)),
+        negative_from_u64(8),
+    );
+
+    // Minimum + Max
+    assert_eq(i64::max().wrapping_sub(i64::max()), from_u64(0));
+
+    assert_eq(
+        i64::max().wrapping_sub(i64::max()).wrapping_sub(i64::max()),
+        i64::min().add(from_u64(1)),
+    );
+
+    assert_eq(
+        i64::max().wrapping_sub(negative_from_u64(1)),
+        i64::min(),
+    );
+    assert_eq(i64::min().wrapping_sub(from_u64(1)), i64::max());
+}
+
 #[test, expected_failure(abort_code = i64::EDivByZero, location = i64)]
 fun test_mod_by_zero() {
     mod(from_u64(123), zero());

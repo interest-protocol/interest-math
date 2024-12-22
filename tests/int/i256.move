@@ -2,6 +2,7 @@
 module interest_math::i256_tests;
 
 use interest_math::i256::{
+    Self,
     or,
     eq,
     lt,
@@ -344,6 +345,131 @@ fun test_mod() {
         mod(from_u256(1234567890123456789012345678901234567890), from_u256(987654321)),
         from_u256(792341811),
     );
+}
+
+#[test]
+fun test_wrapping_add() {
+    // Basic positive number addition
+    assert_eq(from_u256(5).wrapping_add(from_u256(3)), from_u256(8));
+
+    // Adding Zero
+    assert_eq(from_u256(42).wrapping_add(from_u256(0)), from_u256(42));
+
+    // Negative number (in two's complement)
+    assert_eq(
+        negative_from_u256(2).wrapping_add(negative_from_u256(3)),
+        negative_from_u256(5),
+    );
+
+    // Mixed positive and negative numbers
+    assert_eq(
+        from_u256(10).wrapping_add(negative_from_u256(15)),
+        negative_from_u256(5),
+    );
+    assert_eq(
+        negative_from_u256(10).wrapping_add(from_u256(15)),
+        from_u256(5),
+    );
+
+    // Maximum overflow
+    assert_eq(i256::max().wrapping_add(from_u256(1)), i256::min());
+    assert_eq(
+        i256::max().wrapping_add(from_u256(5)),
+        i256::min().wrapping_add(from_u256(4)),
+    );
+
+    // Minimum underflow
+    assert_eq(
+        i256::min().wrapping_add(negative_from_u256(1)),
+        i256::max(),
+    );
+    assert_eq(
+        i256::min().wrapping_add(negative_from_u256(5)),
+        i256::max().wrapping_add(negative_from_u256(4)),
+    );
+
+    // Maximum + Maximum
+    assert_eq(
+        i256::max().wrapping_add(i256::max()),
+        negative_from_u256(2),
+    );
+
+    // Minimum + Minimum
+    assert_eq(i256::min().wrapping_add(i256::min()), from_u256(0));
+
+    // Any number - 1 should decrement the number
+    assert_eq(
+        from_u256(123).wrapping_add(negative_from_u256(1)),
+        from_u256(122),
+    );
+
+    // Zero + Any number should be the same number
+    assert_eq(from_u256(123).wrapping_add(from_u256(0)), from_u256(123));
+}
+
+#[test]
+fun test_wrapping_sub() {
+    // Basic positive subtraction
+    assert_eq(from_u256(8).wrapping_sub(from_u256(3)), from_u256(5));
+
+    // Subtracting zero
+    assert_eq(from_u256(8).wrapping_sub(from_u256(0)), from_u256(8));
+    assert_eq(
+        from_u256(0).wrapping_sub(from_u256(8)),
+        negative_from_u256(8),
+    );
+    assert_eq(from_u256(0).wrapping_sub(from_u256(0)), from_u256(0));
+    assert_eq(
+        negative_from_u256(0).wrapping_sub(from_u256(0)),
+        negative_from_u256(0),
+    );
+
+    // Subtracting a negative number
+    assert_eq(
+        negative_from_u256(5).wrapping_sub(negative_from_u256(3)),
+        negative_from_u256(2),
+    );
+
+    // Positive and negative subtraction
+    assert_eq(
+        from_u256(5).wrapping_sub(negative_from_u256(3)),
+        from_u256(8),
+    );
+    assert_eq(
+        negative_from_u256(5).wrapping_sub(from_u256(3)),
+        negative_from_u256(8),
+    );
+
+    // Subtracting a larger number
+    assert_eq(
+        from_u256(8).wrapping_sub(from_u256(11)),
+        negative_from_u256(3),
+    );
+
+    // Subtracting a negative number from_u32 a positive number
+    assert_eq(
+        negative_from_u256(5).wrapping_sub(from_u256(3)),
+        negative_from_u256(8),
+    );
+
+    // Minimum + Max
+    assert_eq(i256::max().wrapping_sub(i256::max()), from_u256(0));
+
+    assert_eq(
+        i256::max().wrapping_sub(i256::max()).wrapping_sub(i256::max()),
+        i256::min().add(from_u256(1)),
+    );
+
+    assert_eq(
+        i256::max().wrapping_sub(negative_from_u256(1)),
+        i256::min(),
+    );
+    assert_eq(i256::min().wrapping_sub(from_u256(1)), i256::max());
+}
+
+#[test, expected_failure(abort_code = i256::EDivByZero, location = i256)]
+fun test_mod_by_zero() {
+    mod(from_u256(256), zero());
 }
 
 fun one(): I256 {
