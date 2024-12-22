@@ -1,6 +1,6 @@
 module interest_math::i32;
 
-use interest_math::{int_macro as macro, u64};
+use interest_math::{int_macro as macro, uint_macro};
 
 // === Constants ===
 
@@ -180,17 +180,17 @@ public fun div_up(self: I32, other: I32): I32 {
 
     if (self.is_positive() != other.is_positive()) {
         negative_from_u32(
-            u64::div_up(
-                self.abs_unchecked_u32() as u64,
-                other.abs_unchecked_u32() as u64,
-            ) as u32,
+            uint_macro::div_up!(
+                self.abs_unchecked_u32(),
+                other.abs_unchecked_u32(),
+            ),
         )
     } else {
         from_u32(
-            u64::div_up(
-                self.abs_unchecked_u32() as u64,
-                other.abs_unchecked_u32() as u64,
-            ) as u32,
+            uint_macro::div_up!(
+                self.abs_unchecked_u32(),
+                other.abs_unchecked_u32(),
+            ),
         )
     }
 }
@@ -208,7 +208,7 @@ public fun mod(self: I32, other: I32): I32 {
 }
 
 public fun pow(self: I32, exponent: u64): I32 {
-    let result = u64::pow(self.abs().value as u64, exponent);
+    let result = uint_macro::pow!(self.abs().value as u64, exponent);
 
     if (self.is_negative() && exponent % 2 != 0) negative_from(result)
     else from(result)
