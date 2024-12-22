@@ -7,9 +7,8 @@
  */
 module interest_math::fixed_point_wad;
 
-use interest_math::{int::{Self, Int}, u256::{Self, pow, log2_down}};
-
-// === Imports ===
+use interest_math::int::{Self, Int};
+use interest_math::macro;
 
 // === Constants ===
 
@@ -47,7 +46,7 @@ public fun wad(): u256 {
      * @return u256. The result of `x` * `y` / `WAD`.
      */
 public fun try_mul_down(x: u256, y: u256): (bool, u256) {
-    u256::try_mul_div_down(x, y, WAD)
+    macro::try_mul_div_down!(x, y, WAD)
 }
 
 /*
@@ -61,7 +60,7 @@ public fun try_mul_down(x: u256, y: u256): (bool, u256) {
      * @return u256. The result of `x` * `y` / `WAD`.
      */
 public fun try_mul_up(x: u256, y: u256): (bool, u256) {
-    u256::try_mul_div_up(x, y, WAD)
+    macro::try_mul_div_up!(x, y, WAD)
 }
 
 /*
@@ -76,7 +75,7 @@ public fun try_mul_up(x: u256, y: u256): (bool, u256) {
      * @return u256. The result of `x` * `WAD` / `y`.
      */
 public fun try_div_down(x: u256, y: u256): (bool, u256) {
-    u256::try_mul_div_down(x, WAD, y)
+    macro::try_mul_div_down!(x, WAD, y)
 }
 
 /*
@@ -91,7 +90,7 @@ public fun try_div_down(x: u256, y: u256): (bool, u256) {
      * @return u256. The result of `x` * `WAD` / `y`.
      */
 public fun try_div_up(x: u256, y: u256): (bool, u256) {
-    u256::try_mul_div_up(x, WAD, y)
+    macro::try_mul_div_up!(x, WAD, y)
 }
 
 /*
@@ -102,7 +101,7 @@ public fun try_div_up(x: u256, y: u256): (bool, u256) {
      * @return u256. The result of `x` * `y` / `WAD`.
      */
 public fun mul_down(x: u256, y: u256): u256 {
-    u256::mul_div_down(x, y, WAD)
+    macro::mul_div_down!(x, y, WAD)
 }
 
 /*
@@ -113,7 +112,7 @@ public fun mul_down(x: u256, y: u256): u256 {
      * @return u256. The result of `x` * `y` / `WAD`.
      */
 public fun mul_up(x: u256, y: u256): u256 {
-    u256::mul_div_up(x, y, WAD)
+    macro::mul_div_up!(x, y, WAD)
 }
 
 /*
@@ -124,7 +123,7 @@ public fun mul_up(x: u256, y: u256): u256 {
      * @return u256. The result of `x` * `WAD` / `y`.
      */
 public fun div_down(x: u256, y: u256): u256 {
-    u256::mul_div_down(x, WAD, y)
+    macro::mul_div_down!(x, WAD, y)
 }
 
 /*
@@ -135,7 +134,7 @@ public fun div_down(x: u256, y: u256): u256 {
      * @return u256. The result of `x` * `WAD` / `y`.
      */
 public fun div_up(x: u256, y: u256): u256 {
-    u256::mul_div_up(x, WAD, y)
+    macro::mul_div_up!(x, WAD, y)
 }
 
 /*
@@ -146,7 +145,7 @@ public fun div_up(x: u256, y: u256): u256 {
      * @return u256. The result of `x` * `WAD` / `decimal_factor`.
      */
 public fun to_wad(x: u256, decimal_factor: u256): u256 {
-    u256::mul_div_down(x, WAD, (decimal_factor as u256))
+    macro::mul_div_down!(x, WAD, (decimal_factor as u256))
 }
 
 /*
@@ -164,12 +163,12 @@ public fun exp(x: Int): Int {
 
     assert!(int::lt(x, int::from_u256(135305999368893231589)), EOverflow);
 
-    let mut x = int::div_down(int::shl(x, 78), int::from_u256(pow(5, 18)));
+    let mut x = int::div_down(int::shl(x, 78), int::from_u256(macro::pow!(5, 18)));
 
     let k = int::shr(
         int::add(
             int::div_down(int::shl(x, 96), int::from_u256(54916777467707473351141471128)),
-            int::from_u256(pow(2, 95)),
+            int::from_u256(macro::pow!(2, 95)),
         ),
         96,
     );
@@ -240,7 +239,7 @@ public fun exp(x: Int): Int {
 public fun ln(mut x: Int): Int {
     assert!(int::is_positive(x) && !int::is_zero(x), EUndefined);
 
-    let k = int::sub(int::from_u8(log2_down(int::to_u256(x))), int::from_u256(96));
+    let k = int::sub(int::from_u8(macro::log2_down!(int::to_u256(x))), int::from_u256(96));
 
     x = int::shl(x, int::to_u8(int::sub(int::from_u8(159), k)));
     x = int::from_u256(int::value(x) >> 159);

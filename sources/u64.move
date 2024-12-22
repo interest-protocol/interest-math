@@ -1,58 +1,11 @@
 module interest_math::u64;
 
-use interest_math::{int, u256};
+use interest_math::macro;
 
 // === Constants ===
 
 // @dev The maximum u64 number.
 const MAX_U64: u256 = 0xFFFFFFFFFFFFFFFF;
-
-// @dev MAX_U64 + 1.
-const WRAPPING_MAX: u256 = 18446744073709551616;
-
-// === Wrap Functions overflow and underflow without throwing. ===
-
-/*
- * @notice It performs `x` + `y`.
- *
- * @dev It will wrap around the `MAX_U64`.
- * @dev `MAX_U64` + 1 = 0.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @return u64. The result of `x` + `y`.
- */
-public fun wrapping_add(x: u64, y: u64): u64 {
-    (int::wrap(int::add(int::from_u64(x), int::from_u64(y)), WRAPPING_MAX) as u64)
-}
-
-/*
- * @notice It performs `x` - `y`.
- *
- * @dev It will wrap around zero.
- * @dev 0 - 1 = `MAX_U64`.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @return u64. The result of `x` - `y`.
- */
-public fun wrapping_sub(x: u64, y: u64): u64 {
-    (int::wrap(int::sub(int::from_u64(x), int::from_u64(y)), WRAPPING_MAX) as u64)
-}
-
-/*
- * @notice It performs `x` * `y`.
- *
- * @dev It will wrap around.
- * @dev `MAX_U64` * `MAX_U64` = 0.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @return u64. The result of `x` * `y`.
- */
-public fun wrapping_mul(x: u64, y: u64): u64 {
-    (int::wrap(int::mul(int::from_u64(x), int::from_u64(y)), WRAPPING_MAX) as u64)
-}
 
 // === Try Functions do not throw ===
 
@@ -82,7 +35,7 @@ public fun try_add(x: u64, y: u64): (bool, u64) {
  * @return u64. The result of `x` - `y`. If it fails, it will be 0.
  */
 public fun try_sub(x: u64, y: u64): (bool, u64) {
-    if (y > x) (false, 0) else (true, x - y)
+    macro::try_sub!(x, y)
 }
 
 /*
@@ -96,7 +49,7 @@ public fun try_sub(x: u64, y: u64): (bool, u64) {
  * @return u64. The result of `x` * `y`. If it fails, it will be 0.
  */
 public fun try_mul(x: u64, y: u64): (bool, u64) {
-    let (pred, r) = u256::try_mul((x as u256), (y as u256));
+    let (pred, r) = macro::try_mul!(x, y);
     if (!pred || r > MAX_U64) (false, 0) else (true, (r as u64))
 }
 
@@ -111,7 +64,7 @@ public fun try_mul(x: u64, y: u64): (bool, u64) {
  * @return u64. The result of x / y. If it fails, it will be 0.
  */
 public fun try_div_down(x: u64, y: u64): (bool, u64) {
-    if (y == 0) (false, 0) else (true, div_down(x, y))
+    macro::try_div_down!(x, y)
 }
 
 /*
@@ -125,7 +78,7 @@ public fun try_div_down(x: u64, y: u64): (bool, u64) {
  * @return u64. The result of `x` / `y`. If it fails, it will be 0.
  */
 public fun try_div_up(x: u64, y: u64): (bool, u64) {
-    if (y == 0) (false, 0) else (true, div_up(x, y))
+    macro::try_div_up!(x, y)
 }
 
 /*
@@ -141,7 +94,7 @@ public fun try_div_up(x: u64, y: u64): (bool, u64) {
  * @return u64. The result of `x` * `y` / `z`. If it fails, it will be 0.
  */
 public fun try_mul_div_down(x: u64, y: u64, z: u64): (bool, u64) {
-    let (pred, r) = u256::try_mul_div_down((x as u256), (y as u256), (z as u256));
+    let (pred, r) = macro::try_mul_div_down!(x, y, z);
     if (!pred || r > MAX_U64) (false, 0) else (true, (r as u64))
 }
 
@@ -158,7 +111,7 @@ public fun try_mul_div_down(x: u64, y: u64, z: u64): (bool, u64) {
  * @return u64. The result of `x` * `y` / `z`. If it fails, it will be 0.
  */
 public fun try_mul_div_up(x: u64, y: u64, z: u64): (bool, u64) {
-    let (pred, r) = u256::try_mul_div_up((x as u256), (y as u256), (z as u256));
+    let (pred, r) = macro::try_mul_div_up!(x, y, z);
     if (!pred || r > MAX_U64) (false, 0) else (true, (r as u64))
 }
 
@@ -173,7 +126,7 @@ public fun try_mul_div_up(x: u64, y: u64, z: u64): (bool, u64) {
  * @return u128. The result of `x` % `y`. If it fails, it will be 0.
  */
 public fun try_mod(x: u64, y: u64): (bool, u64) {
-    if (y == 0) (false, 0) else (true, x % y)
+    macro::try_mod!(x, y)
 }
 
 // === These functions will throw on overflow/underflow/zero division ===
@@ -188,7 +141,7 @@ public fun try_mod(x: u64, y: u64): (bool, u64) {
  * @return u64. The result of `x` + `y`.
  */
 public fun add(x: u64, y: u64): u64 {
-    x + y
+    macro::add!(x, y)
 }
 
 /*
@@ -201,7 +154,7 @@ public fun add(x: u64, y: u64): u64 {
  * @return u64. The result of `x` - `y`.
  */
 public fun sub(x: u64, y: u64): u64 {
-    x - y
+    macro::sub!(x, y)
 }
 
 /*
@@ -214,7 +167,7 @@ public fun sub(x: u64, y: u64): u64 {
  * @return u64. The result of `x` * `y`.
  */
 public fun mul(x: u64, y: u64): u64 {
-    x * y
+    macro::mul!(x, y)
 }
 
 /*
@@ -227,7 +180,7 @@ public fun mul(x: u64, y: u64): u64 {
  * @return u64. The result of `x` / `y`.
  */
 public fun div_down(x: u64, y: u64): u64 {
-    x / y
+    macro::div_down!(x, y)
 }
 
 /*
@@ -241,8 +194,7 @@ public fun div_down(x: u64, y: u64): u64 {
  * @return u64. The result of `x` / `y`.
  */
 public fun div_up(a: u64, b: u64): u64 {
-    // (a + b - 1) / b can overflow on addition, so we distribute.
-    if (a == 0) 0 else 1 + (a - 1) / b
+    macro::div_up!(a, b)
 }
 
 /*
@@ -256,7 +208,7 @@ public fun div_up(a: u64, b: u64): u64 {
  * @return u64. The result of `x` * `y` / `z`.
  */
 public fun mul_div_down(x: u64, y: u64, z: u64): u64 {
-    (u256::mul_div_down((x as u256), (y as u256), (z as u256)) as u64)
+    macro::mul_div_down!(x, y, z)
 }
 
 /*
@@ -270,7 +222,7 @@ public fun mul_div_down(x: u64, y: u64, z: u64): u64 {
  * @return u64. The result of `x` * `y` / `z`.
  */
 public fun mul_div_up(x: u64, y: u64, z: u64): u64 {
-    (u256::mul_div_up((x as u256), (y as u256), (z as u256)) as u64)
+    macro::mul_div_up!(x, y, z)
 }
 
 /*
@@ -281,7 +233,7 @@ public fun mul_div_up(x: u64, y: u64, z: u64): u64 {
  * @return u64. The lowest number.
  */
 public fun min(x: u64, y: u64): u64 {
-    if (x < y) x else y
+    macro::min!(x, y)
 }
 
 /*
@@ -292,7 +244,7 @@ public fun min(x: u64, y: u64): u64 {
  * @return u64. The largest number.
  */
 public fun max(x: u64, y: u64): u64 {
-    if (x >= y) x else y
+    macro::max!(x, y)
 }
 
 /*
@@ -304,7 +256,7 @@ public fun max(x: u64, y: u64): u64 {
  * @return u64. The clamped x.
  */
 public fun clamp(x: u64, lower: u64, upper: u64): u64 {
-    min(upper, max(lower, x))
+    macro::clamp!(x, lower, upper)
 }
 
 /*
@@ -315,11 +267,7 @@ public fun clamp(x: u64, lower: u64, upper: u64): u64 {
  * @return u64. The difference.
  */
 public fun diff(x: u64, y: u64): u64 {
-    if (x > y) {
-        x - y
-    } else {
-        y - x
-    }
+    macro::diff!(x, y)
 }
 
 /*
@@ -330,7 +278,7 @@ public fun diff(x: u64, y: u64): u64 {
  * @return u64. The result of n^e.
  */
 public fun pow(x: u64, n: u64): u64 {
-    (u256::pow((x as u256), (n as u256)) as u64)
+    macro::pow!(x, n)
 }
 
 /*
@@ -340,16 +288,7 @@ public fun pow(x: u64, n: u64): u64 {
  * @return u256. The sum.
  */
 public fun sum(nums: vector<u64>): u64 {
-    let len = vector::length(&nums);
-    let mut i = 0;
-    let mut sum = 0;
-
-    while (i < len) {
-        sum = sum + *vector::borrow(&nums, i);
-        i = i + 1;
-    };
-
-    sum
+    macro::sum!(nums)
 }
 
 /*
@@ -362,8 +301,7 @@ public fun sum(nums: vector<u64>): u64 {
  * @return u64. (`x` + `y`) / 2.
  */
 public fun average(x: u64, y: u64): u64 {
-    // (a + b) / 2 can overflow.
-    (x & y) + (x ^ y) / 2
+    macro::average!(x, y)
 }
 
 /*
@@ -373,12 +311,7 @@ public fun average(x: u64, y: u64): u64 {
  * @return u64. The average.
  */
 public fun average_vector(nums: vector<u64>): u64 {
-    let len = vector::length(&nums);
-    let sum = sum(nums);
-
-    if (len == 0) return 0;
-
-    sum / (len as u64)
+    macro::average_vector!(nums)
 }
 
 /*
@@ -390,7 +323,7 @@ public fun average_vector(nums: vector<u64>): u64 {
  * @return u64. The square root of x rounding down.
  */
 public fun sqrt_down(x: u64): u64 {
-    (u256::sqrt_down((x as u256)) as u64)
+    macro::sqrt_down!(x)
 }
 
 /*
@@ -402,7 +335,7 @@ public fun sqrt_down(x: u64): u64 {
  * @return u64. The square root of x rounding up.
  */
 public fun sqrt_up(a: u64): u64 {
-    (u256::sqrt_up((a as u256)) as u64)
+    macro::sqrt_up!(a)
 }
 
 /*
@@ -412,7 +345,7 @@ public fun sqrt_up(a: u64): u64 {
  * @return u64. Log2(x).
  */
 public fun log2_down(value: u64): u8 {
-    u256::log2_down((value as u256))
+    macro::log2_down!(value)
 }
 
 /*
@@ -422,7 +355,7 @@ public fun log2_down(value: u64): u8 {
  * @return u64. Log2(x).
  */
 public fun log2_up(value: u64): u16 {
-    u256::log2_up((value as u256))
+    macro::log2_up!(value)
 }
 
 /*
@@ -432,7 +365,7 @@ public fun log2_up(value: u64): u16 {
  * @return u64. Log10(x).
  */
 public fun log10_down(value: u64): u8 {
-    u256::log10_down((value as u256))
+    macro::log10_down!(value)
 }
 
 /*
@@ -442,7 +375,7 @@ public fun log10_down(value: u64): u8 {
  * @return u64. Log10(x).
  */
 public fun log10_up(value: u64): u8 {
-    u256::log10_up((value as u256))
+    macro::log10_up!(value)
 }
 
 /*
@@ -452,7 +385,7 @@ public fun log10_up(value: u64): u8 {
  * @return u64. Log256(x).
  */
 public fun log256_down(x: u64): u8 {
-    u256::log256_down((x as u256))
+    macro::log256_down!(x)
 }
 
 /*
@@ -462,7 +395,7 @@ public fun log256_down(x: u64): u8 {
  * @return u64. Log256(x).
  */
 public fun log256_up(x: u64): u8 {
-    u256::log256_up((x as u256))
+    macro::log256_up!(x)
 }
 
 /*

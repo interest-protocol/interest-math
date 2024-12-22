@@ -1,5 +1,7 @@
 module interest_math::u256;
 
+use interest_math::macro;
+
 // @dev Maximum U256 number
 const MAX_U256: u256 = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
@@ -35,7 +37,7 @@ public fun try_add(x: u256, y: u256): (bool, u256) {
  * @return u256. The result of `x` - `y`. If it fails, it will be 0.
  */
 public fun try_sub(x: u256, y: u256): (bool, u256) {
-    if (y > x) (false, 0) else (true, x - y)
+    macro::try_sub!(x, y)
 }
 
 /*
@@ -49,8 +51,7 @@ public fun try_sub(x: u256, y: u256): (bool, u256) {
  * @return u256. The result of `x` * `y`. If it fails, it will be 0.
  */
 public fun try_mul(x: u256, y: u256): (bool, u256) {
-    if (y == 0) return (true, 0);
-    if (x > MAX_U256 / y) (false, 0) else (true, x * y)
+    macro::try_mul!(x, y)
 }
 
 /*
@@ -64,7 +65,7 @@ public fun try_mul(x: u256, y: u256): (bool, u256) {
  * @return u256. The result of x / y. If it fails, it will be 0.
  */
 public fun try_div_down(x: u256, y: u256): (bool, u256) {
-    if (y == 0) (false, 0) else (true, div_down(x, y))
+    macro::try_div_down!(x, y)
 }
 
 /*
@@ -78,7 +79,7 @@ public fun try_div_down(x: u256, y: u256): (bool, u256) {
  * @return u256. The result of `x` / `y`. If it fails, it will be 0.
  */
 public fun try_div_up(x: u256, y: u256): (bool, u256) {
-    if (y == 0) (false, 0) else (true, div_up(x, y))
+    macro::try_div_up!(x, y)
 }
 
 /*
@@ -94,11 +95,7 @@ public fun try_div_up(x: u256, y: u256): (bool, u256) {
  * @return u256. The result of `x` * `y` / `z`. If it fails, it will be 0.
  */
 public fun try_mul_div_down(x: u256, y: u256, z: u256): (bool, u256) {
-    if (z == 0) return (false, 0);
-    let (pred, _) = try_mul(x, y);
-    if (!pred) return (false, 0);
-
-    (true, mul_div_down(x, y, z))
+    macro::try_mul_div_down!(x, y, z)
 }
 
 /*
@@ -114,11 +111,7 @@ public fun try_mul_div_down(x: u256, y: u256, z: u256): (bool, u256) {
  * @return u256. The result of `x` * `y` / `z`. If it fails, it will be 0.
  */
 public fun try_mul_div_up(x: u256, y: u256, z: u256): (bool, u256) {
-    if (z == 0) return (false, 0);
-    let (pred, _) = try_mul(x, y);
-    if (!pred) return (false, 0);
-
-    (true, mul_div_up(x, y, z))
+    macro::try_mul_div_up!(x, y, z)
 }
 
 /*
@@ -132,7 +125,7 @@ public fun try_mul_div_up(x: u256, y: u256, z: u256): (bool, u256) {
  * @return u128. The result of `x` % `y`. If it fails, it will be 0.
  */
 public fun try_mod(x: u256, y: u256): (bool, u256) {
-    if (y == 0) (false, 0) else (true, x % y)
+    macro::try_mod!(x, y)
 }
 
 // === These functions will throw on overflow/underflow/zero division ===
@@ -147,7 +140,7 @@ public fun try_mod(x: u256, y: u256): (bool, u256) {
  * @return u64. The result of `x` + `y`.
  */
 public fun add(x: u256, y: u256): u256 {
-    x + y
+    macro::add!(x, y)
 }
 
 /*
@@ -160,7 +153,7 @@ public fun add(x: u256, y: u256): u256 {
  * @return u64. The result of `x` - `y`.
  */
 public fun sub(x: u256, y: u256): u256 {
-    x - y
+    macro::sub!(x, y)
 }
 
 /*
@@ -173,7 +166,7 @@ public fun sub(x: u256, y: u256): u256 {
  * @return u256. The result of `x` * `y`.
  */
 public fun mul(x: u256, y: u256): u256 {
-    x * y
+    macro::mul!(x, y)
 }
 
 /*
@@ -186,7 +179,7 @@ public fun mul(x: u256, y: u256): u256 {
  * @return u256. The result of `x` / `y`.
  */
 public fun div_down(x: u256, y: u256): u256 {
-    x / y
+    macro::div_down!(x, y)
 }
 
 /*
@@ -200,7 +193,7 @@ public fun div_down(x: u256, y: u256): u256 {
  * @return u256. The result of `x` / `y`.
  */
 public fun div_up(x: u256, y: u256): u256 {
-    if (x == 0) 0 else 1 + (x - 1) / y
+    macro::div_up!(x, y)
 }
 
 /*
@@ -214,7 +207,7 @@ public fun div_up(x: u256, y: u256): u256 {
  * @return u256. The result of `x` * `y` / `z`.
  */
 public fun mul_div_down(x: u256, y: u256, z: u256): u256 {
-    x * y / z
+    macro::mul_div_down!(x, y, z)
 }
 
 /*
@@ -228,8 +221,7 @@ public fun mul_div_down(x: u256, y: u256, z: u256): u256 {
  * @return u256. The result of `x` * `y` / `z`.
  */
 public fun mul_div_up(x: u256, y: u256, z: u256): u256 {
-    let r = mul_div_down(x, y, z);
-    r + if ((x * y) % z > 0) 1 else 0
+    macro::mul_div_up!(x, y, z)
 }
 
 /*
@@ -240,7 +232,7 @@ public fun mul_div_up(x: u256, y: u256, z: u256): u256 {
  * @return u256. The lowest number.
  */
 public fun min(x: u256, y: u256): u256 {
-    if (x < y) x else y
+    macro::min!(x, y)
 }
 
 /*
@@ -251,7 +243,7 @@ public fun min(x: u256, y: u256): u256 {
  * @return u256. The largest number.
  */
 public fun max(x: u256, y: u256): u256 {
-    if (x >= y) x else y
+    macro::max!(x, y)
 }
 
 /*
@@ -263,7 +255,7 @@ public fun max(x: u256, y: u256): u256 {
  * @return u256. The clamped x.
  */
 public fun clamp(x: u256, lower: u256, upper: u256): u256 {
-    min(upper, max(lower, x))
+    macro::clamp!(x, lower, upper)
 }
 
 /*
@@ -274,11 +266,7 @@ public fun clamp(x: u256, lower: u256, upper: u256): u256 {
  * @return u256. The difference.
  */
 public fun diff(x: u256, y: u256): u256 {
-    if (x > y) {
-        x - y
-    } else {
-        y - x
-    }
+    macro::diff!(x, y)
 }
 
 /*
@@ -288,21 +276,10 @@ public fun diff(x: u256, y: u256): u256 {
  * @param e The exponent.
  * @return u256. The result of n^e.
  */
-public fun pow(mut n: u256, mut e: u256): u256 {
-    if (e == 0) {
-        1
-    } else {
-        let mut p = 1;
-        while (e > 1) {
-            if (e % 2 == 1) {
-                p = p * n;
-            };
-            e = e / 2;
-            n = n * n;
-        };
-        p * n
-    }
+public fun pow(n: u256, e: u256): u256 {
+    macro::pow!(n, e)
 }
+
 
 /*
  * @notice Adds all xs in a vector.
@@ -311,16 +288,7 @@ public fun pow(mut n: u256, mut e: u256): u256 {
  * @return u256. The sum.
  */
 public fun sum(nums: vector<u256>): u256 {
-    let len = vector::length(&nums);
-    let mut i = 0;
-    let mut sum = 0;
-
-    while (i < len) {
-        sum = sum + *vector::borrow(&nums, i);
-        i = i + 1;
-    };
-
-    sum
+    macro::sum!(nums)
 }
 
 /*
@@ -332,7 +300,7 @@ public fun sum(nums: vector<u256>): u256 {
  * @return u256. (`x` + `y`) / 2.
  */
 public fun average(x: u256, y: u256): u256 {
-    (x & y) + (x ^ y) / 2
+    macro::average!(x, y)
 }
 
 /*
@@ -342,13 +310,7 @@ public fun average(x: u256, y: u256): u256 {
  * @return u256. The average.
  */
 public fun average_vector(nums: vector<u256>): u256 {
-    let len = vector::length(&nums);
-
-    if (len == 0) return 0;
-
-    let sum = sum(nums);
-
-    sum / (len as u256)
+    macro::average_vector!(nums)
 }
 
 /*
@@ -360,19 +322,7 @@ public fun average_vector(nums: vector<u256>): u256 {
  * @return u256. The square root of x rounding down.
  */
 public fun sqrt_down(x: u256): u256 {
-    if (x == 0) return 0;
-
-    let mut result = 1 << ((log2_down(x) >> 1) as u8);
-
-    result = (result + x / result) >> 1;
-    result = (result + x / result) >> 1;
-    result = (result + x / result) >> 1;
-    result = (result + x / result) >> 1;
-    result = (result + x / result) >> 1;
-    result = (result + x / result) >> 1;
-    result = (result + x / result) >> 1;
-
-    min(result, x / result)
+    macro::sqrt_down!(x)
 }
 
 /*
@@ -384,8 +334,7 @@ public fun sqrt_down(x: u256): u256 {
  * @return u256. The square root of x rounding up.
  */
 public fun sqrt_up(x: u256): u256 {
-    let r = sqrt_down(x);
-    r + if (r * r < x) 1 else 0
+    macro::sqrt_up!(x)
 }
 
 /*
@@ -394,46 +343,8 @@ public fun sqrt_up(x: u256): u256 {
  * @param x The operand.
  * @return u256. Log2(x).
  */
-public fun log2_down(mut x: u256): u8 {
-    let mut result = 0;
-    if (x >> 128 > 0) {
-        x = x >> 128;
-        result = result + 128;
-    };
-
-    if (x >> 64 > 0) {
-        x = x >> 64;
-        result = result + 64;
-    };
-
-    if (x >> 32 > 0) {
-        x = x >> 32;
-        result = result + 32;
-    };
-
-    if (x >> 16 > 0) {
-        x = x >> 16;
-        result = result + 16;
-    };
-
-    if (x >> 8 > 0) {
-        x = x >> 8;
-        result = result + 8;
-    };
-
-    if (x >> 4 > 0) {
-        x = x >> 4;
-        result = result + 4;
-    };
-
-    if (x >> 2 > 0) {
-        x = x >> 2;
-        result = result + 2;
-    };
-
-    if (x >> 1 > 0) result = result + 1;
-
-    result
+public fun log2_down(x: u256): u8 {
+    macro::log2_down!(x)
 }
 
 /*
@@ -443,8 +354,7 @@ public fun log2_down(mut x: u256): u8 {
  * @return u256. Log2(x).
  */
 public fun log2_up(x: u256): u16 {
-    let r = log2_down(x);
-    (r as u16) + if (1 << (r as u8) < x) 1 else 0
+    macro::log2_up!(x)
 }
 
 /*
@@ -453,42 +363,8 @@ public fun log2_up(x: u256): u16 {
  * @param x The operand.
  * @return u256. Log10(x).
  */
-public fun log10_down(mut x: u256): u8 {
-    let mut result = 0;
-
-    if (x >= 10000000000000000000000000000000000000000000000000000000000000000) {
-        x = x / 10000000000000000000000000000000000000000000000000000000000000000;
-        result = result + 64;
-    };
-
-    if (x >= 100000000000000000000000000000000) {
-        x = x / 100000000000000000000000000000000;
-        result = result + 32;
-    };
-
-    if (x >= 10000000000000000) {
-        x = x / 10000000000000000;
-        result = result + 16;
-    };
-
-    if (x >= 100000000) {
-        x = x / 100000000;
-        result = result + 8;
-    };
-
-    if (x >= 10000) {
-        x = x / 10000;
-        result = result + 4;
-    };
-
-    if (x >= 100) {
-        x = x / 100;
-        result = result + 2;
-    };
-
-    if (x >= 10) result = result + 1;
-
-    result
+public fun log10_down(x: u256): u8 {
+    macro::log10_down!(x)
 }
 
 /*
@@ -498,8 +374,7 @@ public fun log10_down(mut x: u256): u8 {
  * @return u256. Log10(x).
  */
 public fun log10_up(x: u256): u8 {
-    let r = log10_down(x);
-    r + if (pow(10, (r as u256)) < x) 1 else 0
+    macro::log10_up!(x)
 }
 
 /*
@@ -508,32 +383,8 @@ public fun log10_up(x: u256): u8 {
  * @param x The operand.
  * @return u256. Log256(x).
  */
-public fun log256_down(mut x: u256): u8 {
-    let mut result = 0;
-
-    if (x >> 128 > 0) {
-        x = x >> 128;
-        result = result + 16;
-    };
-
-    if (x >> 64 > 0) {
-        x = x >> 64;
-        result = result + 8;
-    };
-
-    if (x >> 32 > 0) {
-        x = x >> 32;
-        result = result + 4;
-    };
-
-    if (x >> 16 > 0) {
-        x = x >> 16;
-        result = result + 2;
-    };
-
-    if (x >> 8 > 0) result = result + 1;
-
-    result
+public fun log256_down(x: u256): u8 {
+    macro::log256_down!(x)
 }
 
 /*
@@ -543,8 +394,7 @@ public fun log256_down(mut x: u256): u8 {
  * @return u256. Log256(x).
  */
 public fun log256_up(x: u256): u8 {
-    let r = log256_down(x);
-    r + if (1 << ((r << 3)) < x) 1 else 0
+    macro::log256_up!(x)
 }
 
 /*

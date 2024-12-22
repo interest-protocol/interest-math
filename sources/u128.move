@@ -1,6 +1,6 @@
 module interest_math::u128;
 
-use interest_math::u256;
+use interest_math::macro;
 
 // === Constants ===
 
@@ -35,7 +35,7 @@ public fun try_add(x: u128, y: u128): (bool, u128) {
  * @return u128. The result of `x` - `y`. If it fails, it will be 0.
  */
 public fun try_sub(x: u128, y: u128): (bool, u128) {
-    if (y > x) (false, 0) else (true, x - y)
+    macro::try_sub!(x, y)
 }
 
 /*
@@ -49,7 +49,7 @@ public fun try_sub(x: u128, y: u128): (bool, u128) {
  * @return u128. The result of `x` * `y`. If it fails, it will be 0.
  */
 public fun try_mul(x: u128, y: u128): (bool, u128) {
-    let (pred, c) = u256::try_mul((x as u256), (y as u256));
+    let (pred, c) = macro::try_mul!(x, y);
     if (!pred || c > MAX_U128) (false, 0) else (true, (c as u128))
 }
 
@@ -64,7 +64,7 @@ public fun try_mul(x: u128, y: u128): (bool, u128) {
  * @return u128. The result of x / y. If it fails, it will be 0.
  */
 public fun try_div_down(x: u128, y: u128): (bool, u128) {
-    if (y == 0) (false, 0) else (true, div_down(x, y))
+    macro::try_div_down!(x, y)
 }
 
 /*
@@ -78,7 +78,7 @@ public fun try_div_down(x: u128, y: u128): (bool, u128) {
  * @return u128. The result of `x` / `y`. If it fails, it will be 0.
  */
 public fun try_div_up(x: u128, y: u128): (bool, u128) {
-    if (y == 0) (false, 0) else (true, div_up(x, y))
+    macro::try_div_up!(x, y)
 }
 
 /*
@@ -94,7 +94,7 @@ public fun try_div_up(x: u128, y: u128): (bool, u128) {
  * @return u128. The result of `x` * `y` / `z`. If it fails, it will be 0.
  */
 public fun try_mul_div_down(x: u128, y: u128, z: u128): (bool, u128) {
-    let (pred, r) = u256::try_mul_div_down((x as u256), (y as u256), (z as u256));
+    let (pred, r) = macro::try_mul_div_down!(x, y, z);
     if (!pred || r > MAX_U128) (false, 0) else (true, (r as u128))
 }
 
@@ -111,7 +111,7 @@ public fun try_mul_div_down(x: u128, y: u128, z: u128): (bool, u128) {
  * @return u128. The result of `x` * `y` / `z`. If it fails, it will be 0.
  */
 public fun try_mul_div_up(x: u128, y: u128, z: u128): (bool, u128) {
-    let (pred, r) = u256::try_mul_div_up((x as u256), (y as u256), (z as u256));
+    let (pred, r) = macro::try_mul_div_up!(x, y, z);
     if (!pred || r > MAX_U128) (false, 0) else (true, (r as u128))
 }
 
@@ -126,7 +126,7 @@ public fun try_mul_div_up(x: u128, y: u128, z: u128): (bool, u128) {
  * @return u128. The result of `x` % `y`. If it fails, it will be 0.
  */
 public fun try_mod(x: u128, y: u128): (bool, u128) {
-    if (y == 0) (false, 0) else (true, x % y)
+    macro::try_mod!(x, y)
 }
 
 // === These functions will throw on overflow/underflow/zero division ===
@@ -141,7 +141,7 @@ public fun try_mod(x: u128, y: u128): (bool, u128) {
  * @return u64. The result of `x` + `y`.
  */
 public fun add(x: u128, y: u128): u128 {
-    x + y
+    macro::add!(x, y)
 }
 
 /*
@@ -154,7 +154,7 @@ public fun add(x: u128, y: u128): u128 {
  * @return u64. The result of `x` - `y`.
  */
 public fun sub(x: u128, y: u128): u128 {
-    x - y
+    macro::sub!(x, y)
 }
 
 /*
@@ -167,7 +167,7 @@ public fun sub(x: u128, y: u128): u128 {
  * @return u128. The result of `x` * `y`.
  */
 public fun mul(x: u128, y: u128): u128 {
-    x * y
+    macro::mul!(x, y)
 }
 
 /*
@@ -180,7 +180,7 @@ public fun mul(x: u128, y: u128): u128 {
  * @return u128. The result of `x` / `y`.
  */
 public fun div_down(x: u128, y: u128): u128 {
-    x / y
+    macro::div_down!(x, y)
 }
 
 /*
@@ -194,8 +194,7 @@ public fun div_down(x: u128, y: u128): u128 {
  * @return u128. The result of `x` / `y`.
  */
 public fun div_up(a: u128, b: u128): u128 {
-    // (a + b - 1) / b can overflow on addition, so we distribute.
-    if (a == 0) 0 else 1 + (a - 1) / b
+    macro::div_up!(a, b)
 }
 
 /*
@@ -209,7 +208,7 @@ public fun div_up(a: u128, b: u128): u128 {
  * @return u128. The result of `x` * `y` / `z`.
  */
 public fun mul_div_down(x: u128, y: u128, z: u128): u128 {
-    (u256::mul_div_down((x as u256), (y as u256), (z as u256)) as u128)
+    macro::mul_div_down!(x, y, z)
 }
 
 /*
@@ -223,7 +222,7 @@ public fun mul_div_down(x: u128, y: u128, z: u128): u128 {
  * @return u128. The result of `x` * `y` / `z`.
  */
 public fun mul_div_up(x: u128, y: u128, z: u128): u128 {
-    (u256::mul_div_up((x as u256), (y as u256), (z as u256)) as u128)
+    macro::mul_div_up!(x, y, z)
 }
 
 /*
@@ -234,7 +233,7 @@ public fun mul_div_up(x: u128, y: u128, z: u128): u128 {
  * @return u128. The lowest number.
  */
 public fun min(a: u128, b: u128): u128 {
-    if (a < b) a else b
+    macro::min!(a, b)
 }
 
 /*
@@ -245,7 +244,7 @@ public fun min(a: u128, b: u128): u128 {
  * @return u128. The largest number.
  */
 public fun max(x: u128, y: u128): u128 {
-    if (x >= y) x else y
+    macro::max!(x, y)
 }
 
 /*
@@ -257,7 +256,7 @@ public fun max(x: u128, y: u128): u128 {
  * @return u128. The clamped x.
  */
 public fun clamp(x: u128, lower: u128, upper: u128): u128 {
-    min(upper, max(lower, x))
+    macro::clamp!(x, lower, upper)
 }
 
 /*
@@ -268,11 +267,7 @@ public fun clamp(x: u128, lower: u128, upper: u128): u128 {
  * @return u128. The difference.
  */
 public fun diff(x: u128, y: u128): u128 {
-    if (x > y) {
-        x - y
-    } else {
-        y - x
-    }
+    macro::diff!(x, y)
 }
 
 /*
@@ -283,7 +278,7 @@ public fun diff(x: u128, y: u128): u128 {
  * @return u128. The result of n^e.
  */
 public fun pow(n: u128, e: u128): u128 {
-    (u256::pow((n as u256), (e as u256)) as u128)
+    macro::pow!(n, e)
 }
 
 /*
@@ -293,16 +288,7 @@ public fun pow(n: u128, e: u128): u128 {
  * @return u256. The sum.
  */
 public fun sum(nums: vector<u128>): u128 {
-    let len = vector::length(&nums);
-    let mut i = 0;
-    let mut sum = 0;
-
-    while (i < len) {
-        sum = sum + *vector::borrow(&nums, i);
-        i = i + 1;
-    };
-
-    sum
+    macro::sum!(nums)
 }
 
 /*
@@ -315,8 +301,7 @@ public fun sum(nums: vector<u128>): u128 {
  * @return u128. (`x` + `y`) / 2.
  */
 public fun average(a: u128, b: u128): u128 {
-    // (a + b) / 2 can overflow.
-    (a & b) + (a ^ b) / 2
+    macro::average!(a, b)
 }
 
 /*
@@ -326,13 +311,7 @@ public fun average(a: u128, b: u128): u128 {
  * @return u128. The average.
  */
 public fun average_vector(nums: vector<u128>): u128 {
-    let len = vector::length(&nums);
-
-    if (len == 0) return 0;
-
-    let sum = sum(nums);
-
-    sum / (len as u128)
+    macro::average_vector!(nums)
 }
 
 /*
@@ -344,7 +323,7 @@ public fun average_vector(nums: vector<u128>): u128 {
  * @return u128. The square root of x rounding down.
  */
 public fun sqrt_down(x: u128): u128 {
-    (u256::sqrt_down((x as u256)) as u128)
+    macro::sqrt_down!(x)
 }
 
 /*
@@ -356,7 +335,7 @@ public fun sqrt_down(x: u128): u128 {
  * @return u128. The square root of x rounding up.
  */
 public fun sqrt_up(x: u128): u128 {
-    (u256::sqrt_up((x as u256)) as u128)
+    macro::sqrt_up!(x)
 }
 
 /*
@@ -366,7 +345,7 @@ public fun sqrt_up(x: u128): u128 {
  * @return u8. Log2(x).
  */
 public fun log2_down(x: u128): u8 {
-    u256::log2_down((x as u256))
+    macro::log2_down!(x)
 }
 
 /*
@@ -376,7 +355,7 @@ public fun log2_down(x: u128): u8 {
  * @return u16. Log2(x).
  */
 public fun log2_up(x: u128): u16 {
-    u256::log2_up((x as u256))
+    macro::log2_up!(x)
 }
 
 /*
@@ -386,7 +365,7 @@ public fun log2_up(x: u128): u16 {
  * @return u8. Log10(x).
  */
 public fun log10_down(x: u128): u8 {
-    u256::log10_down((x as u256))
+    macro::log10_down!(x)
 }
 
 /*
@@ -396,7 +375,7 @@ public fun log10_down(x: u128): u8 {
  * @return u8. Log10(x).
  */
 public fun log10_up(x: u128): u8 {
-    u256::log10_up((x as u256))
+    macro::log10_up!(x)
 }
 
 /*
@@ -406,7 +385,7 @@ public fun log10_up(x: u128): u8 {
  * @return u8. Log256(x).
  */
 public fun log256_down(x: u128): u8 {
-    u256::log256_down((x as u256))
+    macro::log256_down!(x)
 }
 
 /*
@@ -416,7 +395,7 @@ public fun log256_down(x: u128): u8 {
  * @return u8. Log256(x).
  */
 public fun log256_up(x: u128): u8 {
-    u256::log256_up((x as u256))
+   macro::log256_up!(x)
 }
 
 /*
