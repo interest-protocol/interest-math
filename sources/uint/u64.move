@@ -1,10 +1,27 @@
 module interest_math::u64;
 
-use interest_math::uint_macro as macro;
+use interest_math::{uint_macro as macro, i256::{Self, I256}};
 
 // === Constants ===
 
 const MAX_U64: u256 = 0xFFFFFFFFFFFFFFFF;
+
+// @dev MAX_U64 + 1.
+const WRAPPING_MAX: u256 = 18446744073709551616;
+
+// === WrappingFunctions ===
+
+public fun wrapping_add(x: u64, y: u64): u64 {
+    (wrap(i256::from_u64(x).add( i256::from_u64(y)), WRAPPING_MAX) as u64)
+}
+
+public fun wrapping_sub(x: u64, y: u64): u64 {
+    (wrap(i256::from_u64(x).sub( i256::from_u64(y)), WRAPPING_MAX) as u64)
+}
+
+public fun wrapping_mul(x: u64, y: u64): u64 {
+    (wrap(i256::from_u64(x).mul( i256::from_u64(y)), WRAPPING_MAX) as u64)
+}
 
 // === Try Functions ===
 
@@ -149,4 +166,12 @@ public fun log256_up(x: u64): u8 {
 
 public fun max_value(): u64 {
     (MAX_U64 as u64)
+}
+
+// === Private Functions === 
+
+fun wrap(self: I256, max: u256): u256 {
+    let max = i256::from_u256(max);
+
+    i256::to_u256(if (self.is_negative()) self.add( max) else self.sub( max.mul( self.div( max))))
 }

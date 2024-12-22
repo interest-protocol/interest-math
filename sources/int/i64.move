@@ -32,7 +32,7 @@ public struct I64 has copy, drop, store {
     value: u64,
 }
 
-// === Package Functions ===
+// === Public Functions ===
 
 public fun value(self: I64): u64 {
     macro::value!(self)

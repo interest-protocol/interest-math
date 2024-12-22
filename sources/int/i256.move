@@ -32,7 +32,7 @@ public struct I256 has copy, drop, store {
     value: u256,
 }
 
-// === Package Functions ===
+// === Public Functions ===
 
 public fun value(self: I256): u256 {
     macro::value!(self)
