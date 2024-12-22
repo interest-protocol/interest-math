@@ -7,7 +7,7 @@ use interest_math::{uint_macro as macro, i256::{Self, I256}};
 const MAX_U64: u256 = 0xFFFFFFFFFFFFFFFF;
 
 // @dev MAX_U64 + 1.
-const WRAPPING_MAX: u256 = 18446744073709551616;
+const WRAPPING_MAX: u256 = MAX_U64 + 1;
 
 // === WrappingFunctions ===
 
