@@ -72,63 +72,63 @@ public fun from_raw_u64(value: u64): D18 {
     D18 { value: (value as u256) }
 }
 
-public fun to_u256(x: D18, decimal_factor: u256): u256 {
-    let value = macro::mul_div_down!<u256>(x.value, (decimal_factor as u256), D18_SCALAR);
+public fun to_u256(x: D18, decimals: u8): u256 {
+    let value = macro::mul_div_down!<u256>(x.value, macro::pow!<u256>(10, decimals), D18_SCALAR);
     value
 }
 
-public fun to_u128(x: D18, decimal_factor: u256): u128 {
-    let value = macro::mul_div_down!<u256>(x.value, (decimal_factor as u256), D18_SCALAR);
+public fun to_u128(x: D18, decimals: u8): u128 {
+    let value = macro::mul_div_down!<u256>(x.value, macro::pow!<u256>(10, decimals), D18_SCALAR);
     value as u128
 }
 
-public fun to_u64(x: D18, decimal_factor: u256): u64 {
-    let value = macro::mul_div_down!<u256>(x.value, (decimal_factor as u256), D18_SCALAR);
+public fun to_u64(x: D18, decimals: u8): u64 {
+    let value = macro::mul_div_down!<u256>(x.value, macro::pow!<u256>(10, decimals), D18_SCALAR);
     value as u64
 }
 
-public fun to_u256_up(x: D18, decimal_factor: u256): u256 {
-    let value = macro::mul_div_up!<u256>(x.value, (decimal_factor as u256), D18_SCALAR);
+public fun to_u256_up(x: D18, decimals: u8): u256 {
+    let value = macro::mul_div_up!<u256>(x.value, macro::pow!<u256>(10, decimals), D18_SCALAR);
     value
 }
 
-public fun to_u128_up(x: D18, decimal_factor: u256): u128 {
-    let value = macro::mul_div_up!<u256>(x.value, (decimal_factor as u256), D18_SCALAR);
+public fun to_u128_up(x: D18, decimals: u8): u128 {
+    let value = macro::mul_div_up!<u256>(x.value, macro::pow!<u256>(10, decimals), D18_SCALAR);
     value as u128
 }
 
-public fun to_u64_up(x: D18, decimal_factor: u256): u64 {
-    let value = macro::mul_div_up!<u256>(x.value, (decimal_factor as u256), D18_SCALAR);
+public fun to_u64_up(x: D18, decimals: u8): u64 {
+    let value = macro::mul_div_up!<u256>(x.value, macro::pow!<u256>(10, decimals), D18_SCALAR);
     value as u64
 }
 
-public fun u64_to_d18(x: u64, decimal_factor: u256): D18 {
-    let value = macro::mul_div_up!(x, D18_SCALAR, (decimal_factor as u256));
+public fun u64_to_d18(x: u64, decimals: u8): D18 {
+    let value = macro::mul_div_up!(x, D18_SCALAR, macro::pow!<u256>(10, decimals));
     D18 { value }
 }
 
-public fun u128_to_d18(x: u128, decimal_factor: u256): D18 {
-    let value = macro::mul_div_up!((x as u256), D18_SCALAR, (decimal_factor as u256));
+public fun u128_to_d18(x: u128, decimals: u8): D18 {
+    let value = macro::mul_div_up!((x as u256), D18_SCALAR, macro::pow!<u256>(10, decimals));
     D18 { value }
 }
 
-public fun u256_to_d18(x: u256, decimal_factor: u256): D18 {
-    let value = macro::mul_div_up!(x, D18_SCALAR, (decimal_factor as u256));
+public fun u256_to_d18(x: u256, decimals: u8): D18 {
+    let value = macro::mul_div_up!(x, D18_SCALAR, macro::pow!<u256>(10, decimals));
     D18 { value }
 }
 
-public fun u64_to_d18_up(x: u64, decimal_factor: u256): D18 {
-    let value = macro::mul_div_up!((x as u256), D18_SCALAR, (decimal_factor as u256));
+public fun u64_to_d18_up(x: u64, decimals: u8): D18 {
+    let value = macro::mul_div_up!((x as u256), D18_SCALAR, macro::pow!<u256>(10, decimals));
     D18 { value }
 }
 
-public fun u128_to_d18_up(x: u128, decimal_factor: u256): D18 {
-    let value = macro::mul_div_up!((x as u256), D18_SCALAR, (decimal_factor as u256));
+public fun u128_to_d18_up(x: u128, decimals: u8): D18 {
+    let value = macro::mul_div_up!((x as u256), D18_SCALAR, macro::pow!<u256>(10, decimals));
     D18 { value }
 }
 
-public fun u256_to_d18_up(x: u256, decimal_factor: u256): D18 {
-    let value = macro::mul_div_up!(x, D18_SCALAR, (decimal_factor as u256));
+public fun u256_to_d18_up(x: u256, decimals: u8): D18 {
+    let value = macro::mul_div_up!(x, D18_SCALAR, macro::pow!<u256>(10, decimals));
     D18 { value }
 }
 

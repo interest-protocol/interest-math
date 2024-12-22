@@ -34,6 +34,27 @@ fun test_scalar() {
 }
 
 #[test]
+fun test_convert_functions() {
+    assert_eq(d18::from_raw_u256(3).raw_value(), 3);
+    assert_eq(d18::from_u256(3).raw_value(), 3 * D18_SCALAR);
+
+    assert_eq(d18::from_raw_u128(3).raw_value(), 3);
+    assert_eq(d18::from_u128(3).raw_value(), 3 * D18_SCALAR);
+
+    assert_eq(d18::from_raw_u64(3).raw_value(), 3);
+    assert_eq(d18::from_u64(3).raw_value(), 3 * D18_SCALAR);
+
+    assert_eq(d18::u64_to_d18(3 * 1000000000, 9).raw_value(), 3 * D18_SCALAR); 
+    assert_eq(d18::u64_to_d18(3 * 1000000000, 9).to_u64(9), 3 * 1000000000); 
+
+    assert_eq(d18::u128_to_d18(3 * 1000000000000000000, 18).raw_value(), 3 * D18_SCALAR);   
+    assert_eq(d18::u128_to_d18(3 * 1000000000000000000, 18).to_u128(18), 3 * 1000000000000000000);    
+
+    assert_eq(d18::u256_to_d18(3 * 100000000000000000000000000000000000000000000000000, 50).raw_value(), 3 * D18_SCALAR);   
+    assert_eq(d18::u256_to_d18(3 * 100000000000000000000000000000000000000000000000000, 50).to_u256(50), 3 * 100000000000000000000000000000000000000000000000000);    
+}
+
+#[test]
 fun test_try_mul_down() {
     let (pred, r) = try_mul_down(3u256.from(), 5u256.from());
     assert_eq(pred, true);
@@ -212,9 +233,9 @@ fun test_div_up() {
 
 #[test]
 fun test_to_d18() {
-    assert_eq(d18::u256_to_d18(D18_SCALAR, D18_SCALAR).raw_value(), D18_SCALAR);
-    assert_eq(d18::u256_to_d18(2, 1).raw_value(), 2 * D18_SCALAR);
-    assert_eq(d18::u256_to_d18(20 * D18_SCALAR, D18_SCALAR * 10).raw_value(), 2 * D18_SCALAR);
+    assert_eq(d18::u256_to_d18(D18_SCALAR, 18).raw_value(), D18_SCALAR);
+    assert_eq(d18::u256_to_d18(2, 1).raw_value(), 2 * D18_SCALAR / 10);
+    assert_eq(d18::u256_to_d18(20 * D18_SCALAR, 18).raw_value(), 20 * D18_SCALAR);
 }
 
 #[test]
