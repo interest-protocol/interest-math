@@ -138,15 +138,7 @@ public fun gte(self: I128, other: I128): bool {
 }
 
 public fun add(self: I128, other: I128): I128 {
-    let sum = self.wrapping_add(other);
-
-    let sign_a = self.sign();
-    let sign_b = other.sign();
-    let sign_sum = sum.sign();
-
-    assert!(!(sign_a == sign_b && sign_a != sign_sum), EOverflow);
-
-    sum
+    macro::add!(self, other, EOverflow)
 }
 
 public fun sub(self: I128, other: I128): I128 {
