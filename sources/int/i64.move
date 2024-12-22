@@ -50,11 +50,11 @@ public fun min(): I64 {
     I64 { value: MIN_NEGATIVE }
 }
 
-public fun from_u64(value: u64): I64 {
-    I64 { value: check_overflow_and_return(value) }
+public fun from_u32(value: u32): I64 {
+    I64 { value: value as u64 }
 }
 
-public fun from(value: u64): I64 {
+public fun from_u64(value: u64): I64 {
     I64 { value: check_overflow_and_return(value) }
 }
 
@@ -63,10 +63,6 @@ public fun from_u128(value: u128): I64 {
 }
 
 public fun negative_from_u64(value: u64): I64 {
-    negative_from(value)
-}
-
-public fun negative_from(value: u64): I64 {
     if (value == 0) return zero();
 
     I64 {
@@ -75,7 +71,7 @@ public fun negative_from(value: u64): I64 {
 }
 
 public fun negative_from_u128(value: u128): I64 {
-    negative_from(value as u64)
+    negative_from_u64(value as u64)
 }
 
 public fun to_u64(self: I64): u64 {
@@ -154,7 +150,7 @@ public fun add(self: I64, other: I64): I64 {
 }
 
 public fun sub(self: I64, other: I64): I64 {
-    self.add(I64 { value: not_u64(other.value) }.wrapping_add(from(1)))
+    self.add(I64 { value: not_u64(other.value) }.wrapping_add(from_u64(1)))
 }
 
 public fun mul(self: I64, other: I64): I64 {
@@ -210,10 +206,10 @@ public fun mod(self: I64, other: I64): I64 {
 }
 
 public fun pow(self: I64, exponent: u64): I64 {
-    let result = uint_macro::pow!<u32>(self.abs().value as u128, exponent);
+    let result = uint_macro::pow!<u64>(self.abs().value as u128, exponent);
 
-    if (self.is_negative() && exponent % 2 != 0) negative_from(result as u64)
-    else from(result as u64)
+    if (self.is_negative() && exponent % 2 != 0) negative_from_u64(result)
+    else from_u64(result)
 }
 
 public fun wrapping_add(self: I64, other: I64): I64 {
@@ -227,7 +223,7 @@ public fun wrapping_add(self: I64, other: I64): I64 {
 }
 
 public fun wrapping_sub(self: I64, other: I64): I64 {
-    self.wrapping_add(I64 { value: not_u64(other.value) }.wrapping_add(from(1)))
+    self.wrapping_add(I64 { value: not_u64(other.value) }.wrapping_add(from_u64(1)))
 }
 
 public fun and(self: I64, other: I64): I64 {

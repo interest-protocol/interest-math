@@ -54,8 +54,7 @@ public fun from_u32(value: u32): I32 {
     I32 { value: check_overflow_and_return(value) }
 }
 
-// @dev u64 is the most common type for representing integers in Move
-public fun from(value: u64): I32 {
+public fun from_u64(value: u64): I32 {
     I32 { value: check_overflow_and_return(value as u32) }
 }
 
@@ -155,7 +154,7 @@ public fun add(self: I32, other: I32): I32 {
 }
 
 public fun sub(self: I32, other: I32): I32 {
-    self.add(I32 { value: not_u32(other.value) }.wrapping_add(from(1)))
+    self.add(I32 { value: not_u32(other.value) }.wrapping_add(from_u32(1)))
 }
 
 public fun mul(self: I32, other: I32): I32 {
@@ -211,11 +210,11 @@ public fun mod(self: I32, other: I32): I32 {
     }
 }
 
-public fun pow(self: I32, exponent: u64): I32 {
-    let result = uint_macro::pow!(self.abs().value as u64, exponent);
+public fun pow(self: I32, exponent: u32): I32 {
+    let result = uint_macro::pow!<u32>(self.abs().value as u64, exponent);
 
-    if (self.is_negative() && exponent % 2 != 0) negative_from(result)
-    else from(result)
+    if (self.is_negative() && exponent % 2 != 0) negative_from_u32(result)
+    else from_u32(result)
 }
 
 public fun wrapping_add(self: I32, other: I32): I32 {
@@ -229,7 +228,7 @@ public fun wrapping_add(self: I32, other: I32): I32 {
 }
 
 public fun wrapping_sub(self: I32, other: I32): I32 {
-    self.wrapping_add(I32 { value: not_u32(other.value) }.wrapping_add(from(1)))
+    self.wrapping_add(I32 { value: not_u32(other.value) }.wrapping_add(from_u32(1)))
 }
 
 public fun and(self: I32, other: I32): I32 {

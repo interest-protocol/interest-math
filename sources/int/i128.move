@@ -50,12 +50,16 @@ public fun min(): I128 {
     I128 { value: MIN_NEGATIVE }
 }
 
-public fun from_u128(value: u128): I128 {
-    I128 { value: check_overflow_and_return(value) }
+public fun from_u32(value: u32): I128 {
+    I128 { value: value as u128 }
 }
 
-public fun from(value: u64): I128 {
+public fun from_u64(value: u64): I128 {
     I128 { value: value as u128 }
+}
+
+public fun from_u128(value: u128): I128 {
+    I128 { value: check_overflow_and_return(value) }
 }
 
 public fun negative_from_u128(value: u128): I128 {
@@ -146,7 +150,7 @@ public fun add(self: I128, other: I128): I128 {
 }
 
 public fun sub(self: I128, other: I128): I128 {
-    self.add(I128 { value: not_u128(other.value) }.wrapping_add(from(1)))
+    self.add(I128 { value: not_u128(other.value) }.wrapping_add(from_u128(1)))
 }
 
 public fun mul(self: I128, other: I128): I128 {
@@ -219,7 +223,7 @@ public fun wrapping_add(self: I128, other: I128): I128 {
 }
 
 public fun wrapping_sub(self: I128, other: I128): I128 {
-    self.wrapping_add(I128 { value: not_u128(other.value) }.wrapping_add(from(1)))
+    self.wrapping_add(I128 { value: not_u128(other.value) }.wrapping_add(from_u128(1)))
 }
 
 public fun and(self: I128, other: I128): I128 {

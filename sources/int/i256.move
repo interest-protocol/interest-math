@@ -54,16 +54,20 @@ public fun from_u8(value: u8): I256 {
     I256 { value: value as u256 }
 }
 
-public fun from_u256(value: u256): I256 {
-    I256 { value: check_overflow_and_return(value) }
+public fun from_u32(value: u32): I256 {
+    I256 { value: value as u256 }
 }
 
-public fun from(value: u64): I256 {
+public fun from_u64(value: u64): I256 {
     I256 { value: value as u256 }
 }
 
 public fun from_u128(value: u128): I256 {
     I256 { value: value as u256 }
+}
+
+public fun from_u256(value: u256): I256 {
+    I256 { value: check_overflow_and_return(value) }
 }
 
 public fun negative_from_u256(value: u256): I256 {
@@ -166,7 +170,7 @@ public fun add(self: I256, other: I256): I256 {
 }
 
 public fun sub(self: I256, other: I256): I256 {
-    self.add(I256 { value: not_u256(other.value) }.wrapping_add(from(1)))
+    self.add(I256 { value: not_u256(other.value) }.wrapping_add(from_u256(1)))
 }
 
 public fun mul(self: I256, other: I256): I256 {
@@ -238,7 +242,7 @@ public fun wrapping_add(self: I256, other: I256): I256 {
 }
 
 public fun wrapping_sub(self: I256, other: I256): I256 {
-    self.wrapping_add(I256 { value: not_u256(other.value) }.wrapping_add(from(1)))
+    self.wrapping_add(I256 { value: not_u256(other.value) }.wrapping_add(from_u256(1)))
 }
 
 public fun and(self: I256, other: I256): I256 {
