@@ -183,17 +183,11 @@ public fun div_up(self: I32, other: I32): I32 {
 
     if (self.is_positive() != other.is_positive()) {
         negative_from_u32(
-            uint_macro::div_up!(
-                self.abs_unchecked_u32(),
-                other.abs_unchecked_u32(),
-            ),
+            uint_macro::div_up!(self.abs_unchecked_u32(), other.abs_unchecked_u32()),
         )
     } else {
         from_u32(
-            uint_macro::div_up!(
-                self.abs_unchecked_u32(),
-                other.abs_unchecked_u32(),
-            ),
+            uint_macro::div_up!(self.abs_unchecked_u32(), other.abs_unchecked_u32()),
         )
     }
 }

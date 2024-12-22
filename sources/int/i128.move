@@ -178,17 +178,11 @@ public fun div_up(self: I128, other: I128): I128 {
 
     if (self.is_positive() != other.is_positive()) {
         negative_from_u128(
-            uint_macro::div_up!(
-                self.abs_unchecked_u128(),
-                other.abs_unchecked_u128(),
-            ),
+            uint_macro::div_up!(self.abs_unchecked_u128(), other.abs_unchecked_u128()),
         )
     } else {
         from_u128(
-            uint_macro::div_up!(
-                self.abs_unchecked_u128(),
-                other.abs_unchecked_u128(),
-            ),
+            uint_macro::div_up!(self.abs_unchecked_u128(), other.abs_unchecked_u128()),
         )
     }
 }

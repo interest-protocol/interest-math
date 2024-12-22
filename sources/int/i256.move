@@ -197,17 +197,11 @@ public fun div_up(self: I256, other: I256): I256 {
 
     if (self.is_positive() != other.is_positive()) {
         negative_from_u256(
-            uint_macro::div_up!(
-                self.abs_unchecked_u256(),
-                other.abs_unchecked_u256(),
-            ),
+            uint_macro::div_up!(self.abs_unchecked_u256(), other.abs_unchecked_u256()),
         )
     } else {
         from_u256(
-            uint_macro::div_up!(
-                self.abs_unchecked_u256(),
-                other.abs_unchecked_u256(),
-            ),
+            uint_macro::div_up!(self.abs_unchecked_u256(), other.abs_unchecked_u256()),
         )
     }
 }

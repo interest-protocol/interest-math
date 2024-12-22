@@ -1,49 +1,22 @@
-/*
-* @title D18
-*
-* @notice A set of functions to operate over u256 numbers with 1e18 precision.
-*
-* @dev It emulates the decimal precision of ERC20 to port some of their advanced math operations such as {exp} and {ln}.
-*/
 module interest_math::d18;
 
 use interest_math::{i256::{Self, I256}, uint_macro as macro};
 
 // === Constants ===
 
-// @dev One Wad represents the Ether's decimal scalar - 1e18
 const D18_SCALAR: u256 = 1_000_000_000_000_000_000;
-// 1e18
 
-// === Errors ===
+// === Error ===
 
-// @dev It is thrown in values that would overflow in the {exp} function.
 const EOverflow: u64 = 0;
-// @dev when the natural log function receives a negative value
 const EUndefined: u64 = 1;
-
-// === Constant Function ===
-
-/*
-* @notice It returns 1 WAD.
-* @return u256. 1e18.
-*/
-public fun scalar(): u256 {
-    D18_SCALAR
-}
 
 // === Structs ===
 
 public struct D18 has copy, drop, store { value: u256 }
 
-// === Public Convert Functions ===
+// === Conversion Functions ===
 
-/*
-* @notice It converts a `D18` to a `u256`.
-*
-* @param self The `D18` struct.
-* @return The inner value.
-*/
 public fun raw_value(self: D18): u256 {
     self.value
 }
@@ -134,126 +107,50 @@ public fun u256_to_d18_up(x: u256, decimals: u8): D18 {
 
 // === Try Functions ===
 
-/*
-* @notice It tries to `x` * `y` / `WAD` rounding down.
-*
-* @dev It returns zero instead of throwing an overflow error.
-*
-* @param x The first operand.
-* @param y The second operand.
-* @param bool. If the operation was successful or not.
-* @return u256. The result of `x` * `y` / `WAD`.
-*/
 public fun try_mul_down(x: D18, y: D18): (bool, D18) {
     let (pred, value) = macro::try_mul_div_down!(x.value, y.value, D18_SCALAR);
     (pred, D18 { value })
 }
 
-/*
-* @notice It tries to `x` * `y` / `WAD` rounding up.
-*
-* @dev It returns zero instead of throwing an overflow error.
-*
-* @param x The first operand.
-* @param y The second operand.
-* @param bool. If the operation was successful or not.
-* @return u256. The result of `x` * `y` / `WAD`.
-*/
 public fun try_mul_up(x: D18, y: D18): (bool, D18) {
     let (pred, value) = macro::try_mul_div_up!(x.value, y.value, D18_SCALAR);
     (pred, D18 { value })
 }
 
-/*
-* @notice It tries to `x` * `WAD` / `y` rounding down.
-*
-* @dev It will return 0 if `y` is zero.
-* @dev It returns zero instead of throwing an overflow error.
-*
-* @param x The first operand.
-* @param y The second operand.
-* @param bool. If the operation was successful or not.
-* @return u256. The result of `x` * `WAD` / `y`.
-*/
 public fun try_div_down(x: D18, y: D18): (bool, D18) {
     let (pred, value) = macro::try_mul_div_down!(x.value, D18_SCALAR, y.value);
     (pred, D18 { value })
 }
 
-/*
-* @notice It tries to `x` * `WAD` / `y` rounding up.
-*
-* @dev It will return 0 if `y` is zero.
-* @dev It returns zero instead of throwing an overflow error.
-*
-* @param x The first operand.
-* @param y The second operand.
-* @param bool. If the operation was successful or not.
-* @return u256. The result of `x` * `WAD` / `y`.
-*/
 public fun try_div_up(x: D18, y: D18): (bool, D18) {
     let (pred, value) = macro::try_mul_div_up!(x.value, D18_SCALAR, y.value);
     (pred, D18 { value })
 }
 
-/*
-* @notice `x` * `y` / `WAD` rounding down.
-*
-* @param x The first operand.
-* @param y The second operand.
-* @return u256. The result of `x` * `y` / `WAD`.
-*/
+// === Arithmetic Functions ===
+
 public fun mul_down(x: D18, y: D18): D18 {
     let value = macro::mul_div_down!(x.value, y.value, D18_SCALAR);
     D18 { value }
 }
 
-/*
-* @notice `x` * `y` / `WAD` rounding up.
-*
-* @param x The first operand.
-* @param y The second operand.
-* @return u256. The result of `x` * `y` / `WAD`.
-*/
 public fun mul_up(x: D18, y: D18): D18 {
     let value = macro::mul_div_up!(x.value, y.value, D18_SCALAR);
     D18 { value }
 }
 
-/*
-* @notice `x` * `WAD` / `y` rounding down.
-*
-* @param x The first operand.
-* @param y The second operand.
-* @return u256. The result of `x` * `WAD` / `y`.
-*/
 public fun div_down(x: D18, y: D18): D18 {
     let value = macro::mul_div_down!(x.value, D18_SCALAR, y.value);
     D18 { value }
 }
 
-/*
-* @notice `x` * `WAD` / `y` rounding up.
-*
-* @param x The first operand.
-* @param y The second operand.
-* @return u256. The result of `x` * `WAD` / `y`.
-*/
 public fun div_up(x: D18, y: D18): D18 {
     let value = macro::mul_div_up!(x.value, D18_SCALAR, y.value);
     D18 { value }
 }
 
-/*
-* @notice e^x.
-*
-* @dev All credits to Remco Bloemen and more information here: https://xn--2-umb.com/22/exp-ln/
-* @param x The exponent.
-* @return Int. The result of e^x.
-*
-* aborts-if
-*   - `x` is larger than 135305999368893231589.
-*/
+// === Exponential Functions ===
+
 public fun exp(x: I256): I256 {
     if (x.lte(i256::negative_from_u256(42139678854452767551))) return i256::zero();
 
@@ -309,23 +206,14 @@ public fun exp(x: I256): I256 {
     )
 }
 
-/*
-* @notice ln(x).
-*
-* @dev All credits to Remco Bloemen and more information here: https://xn--2-umb.com/22/exp-ln/
-*
-* @param x The operand.
-* @return Int. The result of ln(x).
-*
-* aborts-if
-*   - `x` is negative or zero.
-*/
+// === Logarithmic Functions ===
+
 public fun ln(mut x: I256): I256 {
     assert!(x.is_positive() && !x.is_zero(), EUndefined);
 
     let k = i256::from_u8(macro::log2_down!(x.to_u256())).sub(i256::from_u256(96));
 
-    x = x.shl( i256::from_u8(159).sub(k).to_u8());
+    x = x.shl(i256::from_u8(159).sub(k).to_u8());
     x = i256::from_u256(i256::value(x) >> 159);
 
     let mut p = x.add(i256::from_u256(3273285459638523848632254066296));
@@ -368,7 +256,7 @@ public fun ln(mut x: I256): I256 {
     p = p.mul(x).sub(i256::from_u256(795164235651350426258249787498 << 96));
 
     let mut q = x.add(i256::from_u256(5573035233440673466300451813936));
-    
+
     q =
         q
             .mul(x)
@@ -422,4 +310,10 @@ public fun ln(mut x: I256): I256 {
         );
 
     r.shr(174)
+}
+
+// === Utility Functions ===
+
+public fun scalar(): u256 {
+    D18_SCALAR
 }

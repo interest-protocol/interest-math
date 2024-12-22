@@ -1,46 +1,14 @@
 module interest_math::uint_macro;
 
-// === Try Functions do not throw ===
-
-/*
- * @notice It tries to perform `x` + `y`.
- *
- * @dev Checks for overflow.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @return bool. If the operation was successful.
- * @return The result of `x` + `y`. If it fails, it will be 0.
- */
 public(package) macro fun try_add<$T>($x: _, $y: _, $max: u256): (bool, $T) {
     let r = ($x as u256) + ($y as u256);
     if (r > $max) (false, 0) else (true, (r as $T))
 }
 
-/*
- * @notice It tries to perform `x` - `y`.
- *
- * @dev Checks for underflow.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @return bool. If the operation was successful.
- * @return The result of `x` - `y`. If it fails, it will be 0.
- */
 public(package) macro fun try_sub($x: _, $y: _): (bool, _) {
     if ($y > $x) (false, 0) else (true, $x - $y)
 }
 
-/*
- * @notice It tries to perform `x` * `y`.
- *
- * @dev Checks for overflow.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @return bool. If the operation was successful.
- * @return u256. The result of `x` * `y`. If it fails, it will be 0.
- */
 public(package) macro fun try_mul($x: _, $y: _): (bool, u256) {
     let x = $x as u256;
     let y = $y as u256;
@@ -51,46 +19,14 @@ public(package) macro fun try_mul($x: _, $y: _): (bool, u256) {
     ) (false, 0) else (true, x * y)
 }
 
-/*
- * @notice It tries to perform `x` / `y rounding down.
- *
- * @dev Checks for zero division.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @return bool. If the operation was successful.
- * @return u256. The result of x / y. If it fails, it will be 0.
- */
 public(package) macro fun try_div_down($x: _, $y: _): (bool, _) {
     if ($y == 0) (false, 0) else (true, div_down!($x, $y))
 }
 
-/*
- * @notice It tries to perform `x` / `y` rounding up.
- *
- * @dev Checks for zero division.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @return bool. If the operation was successful.
- * @return The result of `x` / `y`. If it fails, it will be 0.
- */
 public(package) macro fun try_div_up($x: _, $y: _): (bool, _) {
     if ($y == 0) (false, 0) else (true, div_up!($x, $y))
 }
 
-/*
- * @notice It tries to perform `x` * `y` / `z` rounding down.
- *
- * @dev Checks for zero division.
- * @dev Checks for overflow.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @param z The divisor.
- * @return bool. If the operation was successful.
- * @return The result of `x` * `y` / `z`. If it fails, it will be 0.
- */
 public(package) macro fun try_mul_div_down($x: _, $y: _, $z: _): (bool, u256) {
     let x = $x as u256;
     let y = $y as u256;
@@ -103,18 +39,6 @@ public(package) macro fun try_mul_div_down($x: _, $y: _, $z: _): (bool, u256) {
     (true, mul_div_down!<u256>(x, y, z))
 }
 
-/*
- * @notice It tries to perform `x` * `y` / `z` rounding up.
- *
- * @dev Checks for zero division.
- * @dev Checks for overflow.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @param z The divisor.
- * @return bool. If the operation was successful.
- * @return The result of `x` * `y` / `z`. If it fails, it will be 0.
- */
 public(package) macro fun try_mul_div_up($x: _, $y: _, $z: _): (bool, u256) {
     let x = $x as u256;
     let y = $y as u256;
@@ -127,96 +51,30 @@ public(package) macro fun try_mul_div_up($x: _, $y: _, $z: _): (bool, u256) {
     (true, mul_div_up!<u256>(x, y, z))
 }
 
-/*
- * @notice It tries to perform `x` % `y`.
- *
- * @dev Checks for zero division.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @return bool. If the operation was successful.
- * @return The result of `x` % `y`. If it fails, it will be 0.
- */
 public(package) macro fun try_mod($x: _, $y: _): (bool, _) {
     if ($y == 0) (false, 0) else (true, $x % $y)
 }
 
-/*
- * @notice It performs `x` + `y`.
- *
- * @dev It will throw on overflow.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @return The result of `x` + `y`.
- */
 public(package) macro fun add($x: _, $y: _): _ {
     $x + $y
 }
 
-/*
- * @notice It performs `x` - `y`.
- *
- * @dev It will throw on underflow.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @return The result of `x` - `y`.
- */
 public(package) macro fun sub($x: _, $y: _): _ {
     $x - $y
 }
 
-/*
- * @notice It performs `x` * `y`.
- *
- * @dev It will throw on overflow.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @return The result of `x` * `y`.
- */
 public(package) macro fun mul($x: _, $y: _): _ {
     $x * $y
 }
 
-/*
- * @notice It performs `x` / `y` rounding down.
- *
- * @dev It will throw on zero division.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @return The result of `x` / `y`.
- */
 public(package) macro fun div_down($x: _, $y: _): _ {
     $x / $y
 }
 
-/*
- * @notice It performs `x` / `y` rounding up.
- *
- * @dev It will throw on zero division.
- * @dev It does not overflow.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @return The result of `x` / `y`.
- */
 public(package) macro fun div_up($x: _, $y: _): _ {
     if ($x == 0) 0 else 1 + ($x - 1) / $y
 }
 
-/*
- * @notice It performs `x` * `y` / `z` rounding down.
- *
- * @dev It will throw on zero division.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @param z The divisor.
- * @return The result of `x` * `y` / `z`.
- */
 public(package) macro fun mul_div_down<$T>($x: _, $y: _, $z: _): $T {
     let x = $x as u256;
     let y = $y as u256;
@@ -227,16 +85,6 @@ public(package) macro fun mul_div_down<$T>($x: _, $y: _, $z: _): $T {
     r as $T
 }
 
-/*
- * @notice It performs `x` * `y` / `z` rounding up.
- *
- * @dev It will throw on zero division.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @param z The divisor.
- * @return The result of `x` * `y` / `z`.
- */
 public(package) macro fun mul_div_up<$T>($x: _, $y: _, $z: _): $T {
     let x = $x as u256;
     let y = $y as u256;
@@ -247,47 +95,18 @@ public(package) macro fun mul_div_up<$T>($x: _, $y: _, $z: _): $T {
     r as $T
 }
 
-/*
- * @notice It returns the lowest number.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @return The lowest number.
- */
 public(package) macro fun min($x: _, $y: _): _ {
     if ($x < $y) $x else $y
 }
 
-/*
- * @notice It returns the largest number.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @return The largest number.
- */
 public(package) macro fun max($x: _, $y: _): _ {
     if ($x >= $y) $x else $y
 }
 
-/*
- * @notice Clamps `x` between the range of [lower, upper].
- *
- * @param x The operand.
- * @param lower The lower bound of the range.
- * @param upper The upper bound of the range.
- * @return The clamped x.
- */
 public(package) macro fun clamp($x: _, $lower: _, $upper: _): _ {
     min!($upper, max!($lower, $x))
 }
 
-/*
- * @notice Performs |x - y|.
- *
- * @param x The first operand.
- * @param y The second operand.
- * @return The difference.
- */
 public(package) macro fun diff($x: _, $y: _): _ {
     if ($x > $y) {
         $x - $y
@@ -296,13 +115,6 @@ public(package) macro fun diff($x: _, $y: _): _ {
     }
 }
 
-/*
- * @notice Performs n^e.
- *
- * @param n The base.
- * @param e The exponent.
- * @return The result of n^e.
- */
 public(package) macro fun pow<$T>($n: _, $e: _): $T {
     let mut n = $n as u256;
     let mut e = $e as u256;
@@ -322,12 +134,6 @@ public(package) macro fun pow<$T>($n: _, $e: _): $T {
     }
 }
 
-/*
- * @notice Adds all xs in a vector.
- *
- * @param nums A vector of numbers.
- * @return The sum.
- */
 public(package) macro fun sum<$T>($nums: _): $T {
     let nums = $nums;
 
@@ -343,24 +149,10 @@ public(package) macro fun sum<$T>($nums: _): $T {
     sum
 }
 
-/*
- * @notice It returns the average between two numbers (`x` + `y`) / 2.
- *
- * @dev It does not overflow.
- * @param x The first operand.
- * @param y The second operand.
- * @return The average.
- */
 public(package) macro fun average($x: _, $y: _): _ {
     ($x & $y) + ($x ^ $y) / 2
 }
 
-/*
- * @notice Calculates the average of the vector of numbers sum of vector/length of vector.
- *
- * @param nums A vector of numbers.
- * @return The average.
- */
 public(package) macro fun average_vector<$T>($nums: _): $T {
     let nums = $nums;
 
@@ -373,14 +165,6 @@ public(package) macro fun average_vector<$T>($nums: _): $T {
     (sum / (len as u256)) as $T
 }
 
-/*
- * @notice Returns the square root of a number. If the number is not a perfect square, the x is rounded down.
- *
- * @dev Inspired by Henry S. Warren, Jr.'s "Hacker's Delight" (Chapter 11).
- *
- * @param x The operand.
- * @return The square root of x rounding down.
- */
 public(package) macro fun sqrt_down<$T>($x: _): $T {
     let x = $x as u256;
 
@@ -399,25 +183,11 @@ public(package) macro fun sqrt_down<$T>($x: _): $T {
     min!(result, x / result) as $T
 }
 
-/*
- * @notice Returns the square root of `x` number. If the number is not a perfect square, the `x` is rounded up.
- *
- * @dev Inspired by Henry S. Warren, Jr.'s "Hacker's Delight" (Chapter 11).
- *
- * @param x The operand.
- * @return The square root of x rounding up.
- */
 public(package) macro fun sqrt_up<$T>($x: _): $T {
     let r = sqrt_down!($x);
     r + if (r * r < $x) 1 else 0
 }
 
-/*
- * @notice Returns the log2(x) rounding down.
- *
- * @param x The operand.
- * @return The log2(x).
- */
 public(package) macro fun log2_down<$T>($x: _): $T {
     let mut x = $x as u256;
     let mut result = 0;
@@ -461,12 +231,6 @@ public(package) macro fun log2_down<$T>($x: _): $T {
     result
 }
 
-/*
- * @notice Returns the log2(x) rounding up.
- *
- * @param x The operand.
- * @return u256. Log2(x).
- */
 public(package) macro fun log2_up($x: _): u16 {
     let x = $x as u256;
 
@@ -474,12 +238,6 @@ public(package) macro fun log2_up($x: _): u16 {
     (r as u16) + if (1 << (r as u8) < x) 1 else 0
 }
 
-/*
- * @notice Returns the log10(x) rounding down.
- *
- * @param x The operand.
- * @return The log10(x).
- */
 public(package) macro fun log10_down($x: _): u8 {
     let mut x = $x as u256;
 
@@ -520,23 +278,11 @@ public(package) macro fun log10_down($x: _): u8 {
     result
 }
 
-/*
- * @notice Returns the log10(x) rounding up.
- *
- * @param x The operand.
- * @return u256. Log10(x).
- */
 public(package) macro fun log10_up($x: _): u8 {
     let r = log10_down!($x);
     r + if (pow!(10, (r as u256)) < $x) 1 else 0
 }
 
-/*
- * @notice Returns the log256(x) rounding down.
- *
- * @param x The operand.
- * @return The log256(x).
- */
 public(package) macro fun log256_down($x: _): u8 {
     let mut x = $x as u256;
     let mut result = 0;
@@ -566,12 +312,6 @@ public(package) macro fun log256_down($x: _): u8 {
     result
 }
 
-/*
- * @notice Returns the log256(x) rounding up.
- *
- * @param x The operand.
- * @return The log256(x).
- */
 public(package) macro fun log256_up($x: _): u8 {
     let r = log256_down!($x);
     r + if (1 << ((r << 3)) < $x) 1 else 0
