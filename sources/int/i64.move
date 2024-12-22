@@ -156,6 +156,8 @@ public fun sub(self: I64, other: I64): I64 {
 }
 
 public fun mul(self: I64, other: I64): I64 {
+    if (self.value == 0 || other.value == 0) return zero();
+
     if (self.is_positive() != other.is_positive()) {
         negative_from_u64(self.abs_unchecked_u64() * other.abs_unchecked_u64())
     } else {

@@ -321,11 +321,11 @@ public fun exp(x: I256): I256 {
 *   - `x` is negative or zero.
 */
 public fun ln(mut x: I256): I256 {
-    assert!(i256::is_positive(x) && !i256::is_zero(x), EUndefined);
+    assert!(x.is_positive() && !x.is_zero(), EUndefined);
 
     let k = i256::from_u8(macro::log2_down!(x.to_u256())).sub(i256::from_u256(96));
 
-    x = i256::shl(x, i256::from_u8(159).sub(k).to_u8());
+    x = x.shl( i256::from_u8(159).sub(k).to_u8());
     x = i256::from_u256(i256::value(x) >> 159);
 
     let mut p = x.add(i256::from_u256(3273285459638523848632254066296));
@@ -364,9 +364,11 @@ public fun ln(mut x: I256): I256 {
             .sub(
                 i256::from_u256(14706773417378608786704636184526),
             );
-    p = p.mul(x).shr(96).sub(i256::from_u256(795164235651350426258249787498 << 96));
+
+    p = p.mul(x).sub(i256::from_u256(795164235651350426258249787498 << 96));
 
     let mut q = x.add(i256::from_u256(5573035233440673466300451813936));
+    
     q =
         q
             .mul(x)
@@ -407,9 +409,9 @@ public fun ln(mut x: I256): I256 {
     let mut r = p.div(q);
     r = r.mul(i256::from_u256(1677202110996718588342820967067443963516166));
     r =
-        r.mul(i256::from_u256(
+        r.add(i256::from_u256(
             16597577552685614221487285958193947469193820559219878177908093499208371,
-        ).add(
+        ).mul(
             k,
         ));
     r =

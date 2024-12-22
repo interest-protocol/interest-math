@@ -168,6 +168,7 @@ public fun sub(self: I256, other: I256): I256 {
 }
 
 public fun mul(self: I256, other: I256): I256 {
+    if (self.value == 0 || other.value == 0) return zero();
     if (self.is_positive() != other.is_positive()) {
         negative_from_u256(self.abs_unchecked_u256() * other.abs_unchecked_u256())
     } else {

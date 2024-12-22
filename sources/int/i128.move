@@ -148,6 +148,8 @@ public fun sub(self: I128, other: I128): I128 {
 }
 
 public fun mul(self: I128, other: I128): I128 {
+    if (self.value == 0 || other.value == 0) return zero();
+
     if (self.is_positive() != other.is_positive()) {
         negative_from_u128(self.abs_unchecked_u128() * other.abs_unchecked_u128())
     } else {
