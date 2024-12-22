@@ -238,40 +238,40 @@ fun test_to_d18() {
     assert_eq(d18::u256_to_d18(20 * D18_SCALAR, 18).raw_value(), 20 * D18_SCALAR);
 }
 
-// #[test]
-// fun test_exp() {
-//     assert_eq(exp(int::neg_from_u256(42139678854452767551)).value(), 0);
+#[test]
+fun test_exp() {
+    assert_eq(exp(i256::negative_from_u256(42139678854452767551)).value(), 0);
 
-//     assert_eq(exp(int::neg_from_u256(3000000000000000000)).value(), 49787068367863942);
-//     assert_eq(exp(int::neg_from_u256(2 * D18_SCALAR)).value(), 135335283236612691);
-//     assert_eq(exp(int::neg_from_u256(D18_SCALAR)).value(), 367879441171442321);
+    assert_eq(exp(i256::negative_from_u256(3000000000000000000)).value(), 49787068367863942);
+    assert_eq(exp(i256::negative_from_u256(2 * D18_SCALAR)).value(), 135335283236612691);
+    assert_eq(exp(i256::negative_from_u256(D18_SCALAR)).value(), 367879441171442321);
 
-//     assert_eq(exp(int::neg_from_u256(5 * D18_SCALAR / 10)).value(), 606530659712633423);
-//     assert_eq(exp(int::neg_from_u256(3 * D18_SCALAR / 10)).value(), 740818220681717866);
+    assert_eq(exp(i256::negative_from_u256(5 * D18_SCALAR / 10)).value(), 606530659712633423);
+    assert_eq(exp(i256::negative_from_u256(3 * D18_SCALAR / 10)).value(), 740818220681717866);
 
-//     assert_eq(exp(int::from_u256(0)).value(), D18_SCALAR);
+    assert_eq(exp(i256::from_u256(0)).value(), D18_SCALAR);
 
-//     assert_eq(exp(int::from_u256(3 * D18_SCALAR / 10)).value(), 1349858807576003103);
-//     assert_eq(exp(int::from_u256(5 * D18_SCALAR / 10)).value(), 1648721270700128146);
+    assert_eq(exp(i256::from_u256(3 * D18_SCALAR / 10)).value(), 1349858807576003103);
+    assert_eq(exp(i256::from_u256(5 * D18_SCALAR / 10)).value(), 1648721270700128146);
 
-//     assert_eq(exp(int::from_u256(1 * D18_SCALAR)).value(), 2718281828459045235);
-//     assert_eq(exp(int::from_u256(2 * D18_SCALAR)).value(), 7389056098930650227);
-//     assert_eq(exp(int::from_u256(3 * D18_SCALAR)).value(), 20085536923187667741);
+    assert_eq(exp(i256::from_u256(1 * D18_SCALAR)).value(), 2718281828459045235);
+    assert_eq(exp(i256::from_u256(2 * D18_SCALAR)).value(), 7389056098930650227);
+    assert_eq(exp(i256::from_u256(3 * D18_SCALAR)).value(), 20085536923187667741);
 
-//     assert_eq(exp(int::from_u256(10 * D18_SCALAR)).value(), 220264657948067165169_80);
+    assert_eq(exp(i256::from_u256(10 * D18_SCALAR)).value(), 220264657948067165169_80);
 
-//     assert_eq(exp(int::from_u256(50 * D18_SCALAR)).value(), 5184705528587072464_148529318587763226117);
+    assert_eq(exp(i256::from_u256(50 * D18_SCALAR)).value(), 5184705528587072464_148529318587763226117);
 
-//     assert_eq(
-//         exp(int::from_u256(100 * D18_SCALAR)).value(),
-//         268811714181613544841_34666106240937146178367581647816351662017,
-//     );
+    assert_eq(
+        exp(i256::from_u256(100 * D18_SCALAR)).value(),
+        268811714181613544841_34666106240937146178367581647816351662017,
+    );
 
-//     assert_eq(
-//         exp(int::from_u256(135305999368893231588)).value(),
-//         578960446186580976_50144101621524338577433870140581303254786265309376407432913,
-//     );
-// }
+    assert_eq(
+        exp(i256::from_u256(135305999368893231588)).value(),
+        578960446186580976_50144101621524338577433870140581303254786265309376407432913,
+    );
+}
 
 #[test]
 fun test_ln() {
