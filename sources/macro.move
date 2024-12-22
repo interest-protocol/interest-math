@@ -1,6 +1,22 @@
-module interest_math::macro; 
+module interest_math::uint_macro; 
 
 // === Try Functions do not throw ===
+
+/*
+ * @notice It tries to perform `x` + `y`.
+ *
+ * @dev Checks for overflow.
+ *
+ * @param x The first operand.
+ * @param y The second operand.
+ * @return bool. If the operation was successful.
+ * @return The result of `x` + `y`. If it fails, it will be 0.
+ */
+public(package) macro fun try_add<$T>($x: _, $y: _, $max: u256): (bool, $T) {
+    let r = ($x as u256) + ($y as u256);
+    if (r > $max) (false, 0) else (true, (r as $T))
+}
+
 
 /*
  * @notice It tries to perform `x` - `y`.

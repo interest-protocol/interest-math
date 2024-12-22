@@ -1,14 +1,13 @@
 /*
- * @title Fixed Point WAD
- *
- * @notice A set of functions to operate over u256 numbers with 1e18 precision.
- *
- * @dev It emulates the decimal precision of ERC20 to port some of their advanced math operations such as {exp} and {ln}.
- */
+* @title Fixed Point WAD
+*
+* @notice A set of functions to operate over u256 numbers with 1e18 precision.
+*
+* @dev It emulates the decimal precision of ERC20 to port some of their advanced math operations such as {exp} and {ln}.
+*/
 module interest_math::fixed_point_wad;
 
-use interest_math::int::{Self, Int};
-use interest_math::macro;
+use interest_math::{int::{Self, Int}, uint_macro as macro};
 
 // === Constants ===
 
@@ -36,128 +35,128 @@ public fun wad(): u256 {
 // === Try Functions ===
 
 /*
-     * @notice It tries to `x` * `y` / `WAD` rounding down.
-     *
-     * @dev It returns zero instead of throwing an overflow error.
-     *
-     * @param x The first operand.
-     * @param y The second operand.
-     * @param bool. If the operation was successful or not.
-     * @return u256. The result of `x` * `y` / `WAD`.
-     */
+* @notice It tries to `x` * `y` / `WAD` rounding down.
+*
+* @dev It returns zero instead of throwing an overflow error.
+*
+* @param x The first operand.
+* @param y The second operand.
+* @param bool. If the operation was successful or not.
+* @return u256. The result of `x` * `y` / `WAD`.
+*/
 public fun try_mul_down(x: u256, y: u256): (bool, u256) {
     macro::try_mul_div_down!(x, y, WAD)
 }
 
 /*
-     * @notice It tries to `x` * `y` / `WAD` rounding up.
-         *
-     * @dev It returns zero instead of throwing an overflow error.
-     *
-     * @param x The first operand.
-     * @param y The second operand.
-     * @param bool. If the operation was successful or not.
-     * @return u256. The result of `x` * `y` / `WAD`.
-     */
+* @notice It tries to `x` * `y` / `WAD` rounding up.
+*
+* @dev It returns zero instead of throwing an overflow error.
+*
+* @param x The first operand.
+* @param y The second operand.
+* @param bool. If the operation was successful or not.
+* @return u256. The result of `x` * `y` / `WAD`.
+*/
 public fun try_mul_up(x: u256, y: u256): (bool, u256) {
     macro::try_mul_div_up!(x, y, WAD)
 }
 
 /*
-     * @notice It tries to `x` * `WAD` / `y` rounding down.
-     *
-     * @dev It will return 0 if `y` is zero.
-     * @dev It returns zero instead of throwing an overflow error.
-     *
-     * @param x The first operand.
-     * @param y The second operand.
-     * @param bool. If the operation was successful or not.
-     * @return u256. The result of `x` * `WAD` / `y`.
-     */
+* @notice It tries to `x` * `WAD` / `y` rounding down.
+*
+* @dev It will return 0 if `y` is zero.
+* @dev It returns zero instead of throwing an overflow error.
+*
+* @param x The first operand.
+* @param y The second operand.
+* @param bool. If the operation was successful or not.
+* @return u256. The result of `x` * `WAD` / `y`.
+*/
 public fun try_div_down(x: u256, y: u256): (bool, u256) {
     macro::try_mul_div_down!(x, WAD, y)
 }
 
 /*
-     * @notice It tries to `x` * `WAD` / `y` rounding up.
-     *
-     * @dev It will return 0 if `y` is zero.
-     * @dev It returns zero instead of throwing an overflow error.
-     *
-     * @param x The first operand.
-     * @param y The second operand.
-     * @param bool. If the operation was successful or not.
-     * @return u256. The result of `x` * `WAD` / `y`.
-     */
+* @notice It tries to `x` * `WAD` / `y` rounding up.
+*
+* @dev It will return 0 if `y` is zero.
+* @dev It returns zero instead of throwing an overflow error.
+*
+* @param x The first operand.
+* @param y The second operand.
+* @param bool. If the operation was successful or not.
+* @return u256. The result of `x` * `WAD` / `y`.
+*/
 public fun try_div_up(x: u256, y: u256): (bool, u256) {
     macro::try_mul_div_up!(x, WAD, y)
 }
 
 /*
-     * @notice `x` * `y` / `WAD` rounding down.
-     *
-     * @param x The first operand.
-     * @param y The second operand.
-     * @return u256. The result of `x` * `y` / `WAD`.
-     */
+* @notice `x` * `y` / `WAD` rounding down.
+*
+* @param x The first operand.
+* @param y The second operand.
+* @return u256. The result of `x` * `y` / `WAD`.
+*/
 public fun mul_down(x: u256, y: u256): u256 {
     macro::mul_div_down!(x, y, WAD)
 }
 
 /*
-     * @notice `x` * `y` / `WAD` rounding up.
-     *
-     * @param x The first operand.
-     * @param y The second operand.
-     * @return u256. The result of `x` * `y` / `WAD`.
-     */
+* @notice `x` * `y` / `WAD` rounding up.
+*
+* @param x The first operand.
+* @param y The second operand.
+* @return u256. The result of `x` * `y` / `WAD`.
+*/
 public fun mul_up(x: u256, y: u256): u256 {
     macro::mul_div_up!(x, y, WAD)
 }
 
 /*
-     * @notice `x` * `WAD` / `y` rounding down.
-     *
-     * @param x The first operand.
-     * @param y The second operand.
-     * @return u256. The result of `x` * `WAD` / `y`.
-     */
+* @notice `x` * `WAD` / `y` rounding down.
+*
+* @param x The first operand.
+* @param y The second operand.
+* @return u256. The result of `x` * `WAD` / `y`.
+*/
 public fun div_down(x: u256, y: u256): u256 {
     macro::mul_div_down!(x, WAD, y)
 }
 
 /*
-     * @notice `x` * `WAD` / `y` rounding up.
-     *
-     * @param x The first operand.
-     * @param y The second operand.
-     * @return u256. The result of `x` * `WAD` / `y`.
-     */
+* @notice `x` * `WAD` / `y` rounding up.
+*
+* @param x The first operand.
+* @param y The second operand.
+* @return u256. The result of `x` * `WAD` / `y`.
+*/
 public fun div_up(x: u256, y: u256): u256 {
     macro::mul_div_up!(x, WAD, y)
 }
 
 /*
-     * @notice It converts `x` precision to a `WAD`, a number with a precision of 1e9.
-     *
-     * @param x The value to be converted.
-     * @param y The current decimal scalar of the x.
-     * @return u256. The result of `x` * `WAD` / `decimal_factor`.
-     */
+* @notice It converts `x` precision to a `WAD`, a number with a precision of 1e9.
+*
+* @param x The value to be converted.
+* @param y The current decimal scalar of the x.
+* @return u256. The result of `x` * `WAD` / `decimal_factor`.
+*/
 public fun to_wad(x: u256, decimal_factor: u256): u256 {
     macro::mul_div_down!(x, WAD, (decimal_factor as u256))
 }
 
 /*
-     * @notice e^x.
-     *
-     * @dev All credits to Remco Bloemen and more information here: https://xn--2-umb.com/22/exp-ln/
-     * @param x The exponent.
-     * @return Int. The result of e^x.
-     *
-     * aborts-if
-     *   - `x` is larger than 135305999368893231589.
-     */
+* @notice e^x.
+*
+* @dev All credits to Remco Bloemen and more information here: https://xn--2-umb.com/22/exp-ln/
+* @param x The exponent.
+* @return Int. The result of e^x.
+*
+* aborts-if
+*   - `x` is larger than 135305999368893231589.
+*/
 public fun exp(x: Int): Int {
     if (int::lte(x, int::neg_from_u256(42139678854452767551))) return int::zero();
 
@@ -226,16 +225,16 @@ public fun exp(x: Int): Int {
 }
 
 /*
-     * @notice ln(x).
-     *
-     * @dev All credits to Remco Bloemen and more information here: https://xn--2-umb.com/22/exp-ln/
-     *
-     * @param x The operand.
-     * @return Int. The result of ln(x).
-     *
-     * aborts-if
-     *   - `x` is negative or zero.
-     */
+* @notice ln(x).
+*
+* @dev All credits to Remco Bloemen and more information here: https://xn--2-umb.com/22/exp-ln/
+*
+* @param x The operand.
+* @return Int. The result of ln(x).
+*
+* aborts-if
+*   - `x` is negative or zero.
+*/
 public fun ln(mut x: Int): Int {
     assert!(int::is_positive(x) && !int::is_zero(x), EUndefined);
 

@@ -1,6 +1,6 @@
 module interest_math::u256;
 
-use interest_math::macro;
+use interest_math::uint_macro as macro;
 
 // @dev Maximum U256 number
 const MAX_U256: u256 = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;

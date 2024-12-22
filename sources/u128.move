@@ -1,6 +1,6 @@
 module interest_math::u128;
 
-use interest_math::macro;
+use interest_math::uint_macro as macro;
 
 // === Constants ===
 
@@ -20,8 +20,7 @@ const MAX_U128: u256 = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
  * @return u128. The result of `x` + `y`. If it fails, it will be 0.
  */
 public fun try_add(x: u128, y: u128): (bool, u128) {
-    let c = (x as u256) + (y as u256);
-    if (c > MAX_U128) (false, 0) else (true, (c as u128))
+    macro::try_add!(x, y, MAX_U128)
 }
 
 /*
