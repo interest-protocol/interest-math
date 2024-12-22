@@ -1,18 +1,18 @@
 /*
-* @title Fixed Point WAD
+* @title D18
 *
 * @notice A set of functions to operate over u256 numbers with 1e18 precision.
 *
 * @dev It emulates the decimal precision of ERC20 to port some of their advanced math operations such as {exp} and {ln}.
 */
-module interest_math::fixed_point_wad;
+module interest_math::d18;
 
 use interest_math::{int::{Self, Int}, uint_macro as macro};
 
 // === Constants ===
 
 // @dev One Wad represents the Ether's decimal scalar - 1e18
-const WAD: u256 = 1_000_000_000_000_000_000;
+const D18_SCALAR: u256 = 1_000_000_000_000_000_000;
 // 1e18
 
 // === Errors ===
@@ -28,8 +28,108 @@ const EUndefined: u64 = 1;
 * @notice It returns 1 WAD.
 * @return u256. 1e18.
 */
-public fun wad(): u256 {
-    WAD
+public fun scalar(): u256 {
+    D18_SCALAR
+}
+
+// === Structs ===
+
+public struct D18 has copy, drop, store { value: u256 }
+
+// === Public Convert Functions ===
+
+/*
+* @notice It converts a `D18` to a `u256`.
+*
+* @param self The `D18` struct.
+* @return The inner value.
+*/
+public fun raw_value(self: D18): u256 {
+    self.value
+}
+
+public fun from_u256(value: u256): D18 {
+    D18 { value: (value * D18_SCALAR) }
+}
+
+public fun from_u128(value: u128): D18 {
+    D18 { value: ((value as u256) * D18_SCALAR) }
+}
+
+public fun from_u64(value: u64): D18 {
+    D18 { value: ((value as u256) * D18_SCALAR) }
+}
+
+public fun from_raw_u256(value: u256): D18 {
+    D18 { value }
+}
+
+public fun from_raw_u128(value: u128): D18 {
+    D18 { value: (value as u256) }
+}
+
+public fun from_raw_u64(value: u64): D18 {
+    D18 { value: (value as u256) }
+}
+
+public fun to_u256(x: D18, decimal_factor: u256): u256 {
+    let value = macro::mul_div_down!<u256>(x.value, (decimal_factor as u256), D18_SCALAR);
+    value
+}
+
+public fun to_u128(x: D18, decimal_factor: u256): u128 {
+    let value = macro::mul_div_down!<u256>(x.value, (decimal_factor as u256), D18_SCALAR);
+    value as u128
+}
+
+public fun to_u64(x: D18, decimal_factor: u256): u64 {
+    let value = macro::mul_div_down!<u256>(x.value, (decimal_factor as u256), D18_SCALAR);
+    value as u64
+}
+
+public fun to_u256_up(x: D18, decimal_factor: u256): u256 {
+    let value = macro::mul_div_up!<u256>(x.value, (decimal_factor as u256), D18_SCALAR);
+    value
+}
+
+public fun to_u128_up(x: D18, decimal_factor: u256): u128 {
+    let value = macro::mul_div_up!<u256>(x.value, (decimal_factor as u256), D18_SCALAR);
+    value as u128
+}
+
+public fun to_u64_up(x: D18, decimal_factor: u256): u64 {
+    let value = macro::mul_div_up!<u256>(x.value, (decimal_factor as u256), D18_SCALAR);
+    value as u64
+}
+
+public fun u64_to_d18(x: u64, decimal_factor: u256): D18 {
+    let value = macro::mul_div_up!(x, D18_SCALAR, (decimal_factor as u256));
+    D18 { value }
+}
+
+public fun u128_to_d18(x: u128, decimal_factor: u256): D18 {
+    let value = macro::mul_div_up!((x as u256), D18_SCALAR, (decimal_factor as u256));
+    D18 { value }
+}
+
+public fun u256_to_d18(x: u256, decimal_factor: u256): D18 {
+    let value = macro::mul_div_up!(x, D18_SCALAR, (decimal_factor as u256));
+    D18 { value }
+}
+
+public fun u64_to_d18_up(x: u64, decimal_factor: u256): D18 {
+    let value = macro::mul_div_up!((x as u256), D18_SCALAR, (decimal_factor as u256));
+    D18 { value }
+}
+
+public fun u128_to_d18_up(x: u128, decimal_factor: u256): D18 {
+    let value = macro::mul_div_up!((x as u256), D18_SCALAR, (decimal_factor as u256));
+    D18 { value }
+}
+
+public fun u256_to_d18_up(x: u256, decimal_factor: u256): D18 {
+    let value = macro::mul_div_up!(x, D18_SCALAR, (decimal_factor as u256));
+    D18 { value }
 }
 
 // === Try Functions ===
@@ -44,8 +144,9 @@ public fun wad(): u256 {
 * @param bool. If the operation was successful or not.
 * @return u256. The result of `x` * `y` / `WAD`.
 */
-public fun try_mul_down(x: u256, y: u256): (bool, u256) {
-    macro::try_mul_div_down!(x, y, WAD)
+public fun try_mul_down(x: D18, y: D18): (bool, D18) {
+    let (pred, value) = macro::try_mul_div_down!(x.value, y.value, D18_SCALAR);
+    (pred, D18 { value })
 }
 
 /*
@@ -58,8 +159,9 @@ public fun try_mul_down(x: u256, y: u256): (bool, u256) {
 * @param bool. If the operation was successful or not.
 * @return u256. The result of `x` * `y` / `WAD`.
 */
-public fun try_mul_up(x: u256, y: u256): (bool, u256) {
-    macro::try_mul_div_up!(x, y, WAD)
+public fun try_mul_up(x: D18, y: D18): (bool, D18) {
+    let (pred, value) = macro::try_mul_div_up!(x.value, y.value, D18_SCALAR);
+    (pred, D18 { value })
 }
 
 /*
@@ -73,8 +175,9 @@ public fun try_mul_up(x: u256, y: u256): (bool, u256) {
 * @param bool. If the operation was successful or not.
 * @return u256. The result of `x` * `WAD` / `y`.
 */
-public fun try_div_down(x: u256, y: u256): (bool, u256) {
-    macro::try_mul_div_down!(x, WAD, y)
+public fun try_div_down(x: D18, y: D18): (bool, D18) {
+    let (pred, value) = macro::try_mul_div_down!(x.value, D18_SCALAR, y.value);
+    (pred, D18 { value })
 }
 
 /*
@@ -88,8 +191,9 @@ public fun try_div_down(x: u256, y: u256): (bool, u256) {
 * @param bool. If the operation was successful or not.
 * @return u256. The result of `x` * `WAD` / `y`.
 */
-public fun try_div_up(x: u256, y: u256): (bool, u256) {
-    macro::try_mul_div_up!(x, WAD, y)
+public fun try_div_up(x: D18, y: D18): (bool, D18) {
+    let (pred, value) = macro::try_mul_div_up!(x.value, D18_SCALAR, y.value);
+    (pred, D18 { value })
 }
 
 /*
@@ -99,8 +203,9 @@ public fun try_div_up(x: u256, y: u256): (bool, u256) {
 * @param y The second operand.
 * @return u256. The result of `x` * `y` / `WAD`.
 */
-public fun mul_down(x: u256, y: u256): u256 {
-    macro::mul_div_down!(x, y, WAD)
+public fun mul_down(x: D18, y: D18): D18 {
+    let value = macro::mul_div_down!(x.value, y.value, D18_SCALAR);
+    D18 { value }
 }
 
 /*
@@ -110,8 +215,9 @@ public fun mul_down(x: u256, y: u256): u256 {
 * @param y The second operand.
 * @return u256. The result of `x` * `y` / `WAD`.
 */
-public fun mul_up(x: u256, y: u256): u256 {
-    macro::mul_div_up!(x, y, WAD)
+public fun mul_up(x: D18, y: D18): D18 {
+    let value = macro::mul_div_up!(x.value, y.value, D18_SCALAR);
+    D18 { value }
 }
 
 /*
@@ -121,8 +227,9 @@ public fun mul_up(x: u256, y: u256): u256 {
 * @param y The second operand.
 * @return u256. The result of `x` * `WAD` / `y`.
 */
-public fun div_down(x: u256, y: u256): u256 {
-    macro::mul_div_down!(x, WAD, y)
+public fun div_down(x: D18, y: D18): D18 {
+    let value = macro::mul_div_down!(x.value, D18_SCALAR, y.value);
+    D18 { value }
 }
 
 /*
@@ -132,19 +239,9 @@ public fun div_down(x: u256, y: u256): u256 {
 * @param y The second operand.
 * @return u256. The result of `x` * `WAD` / `y`.
 */
-public fun div_up(x: u256, y: u256): u256 {
-    macro::mul_div_up!(x, WAD, y)
-}
-
-/*
-* @notice It converts `x` precision to a `WAD`, a number with a precision of 1e9.
-*
-* @param x The value to be converted.
-* @param y The current decimal scalar of the x.
-* @return u256. The result of `x` * `WAD` / `decimal_factor`.
-*/
-public fun to_wad(x: u256, decimal_factor: u256): u256 {
-    macro::mul_div_down!(x, WAD, (decimal_factor as u256))
+public fun div_up(x: D18, y: D18): D18 {
+    let value = macro::mul_div_up!(x.value, D18_SCALAR, y.value);
+    D18 { value }
 }
 
 /*

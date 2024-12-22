@@ -4,13 +4,12 @@ use interest_math::u256;
 
 // === Constants ===
 
-// @dev Maximum i256 as u256. We need one bit for the sign. 0 positive / 1 negative.
+//@dev Maximum i256 as u256. We need one bit for the sign. 0 positive / 1 negative.
 const MAX_I256_AS_U256: u256 = 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
-// @dev Maximum u256 number.
-
+//@dev Maximum u256 number.
 const MAX_U256: u256 = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
 
-// @dev A mask to check if a number is positive or negative. It has the MSB set to 1.
+//@dev A mask to check if a number is positive or negative. It has the MSB set to 1.
 const U256_WITH_FIRST_BIT_SET: u256 = 1 << 255;
 
 // Compare Results
@@ -23,22 +22,24 @@ const GREATER_THAN: u8 = 2;
 
 // === Errors ===
 
-// @dev It occurs if an operation results in a value higher than `MAX_I256_U256`.
+//@dev It occurs if an operation results in a value higher than `MAX_I256_U256`.
 const EConversionFromU256Overflow: u64 = 0;
-// @dev It occurs if a negative Int is converted to an unsigned integer.
+//@dev It occurs if a negative Int is converted to an unsigned integer.
 const EConversionUnderflow: u64 = 1;
 
 // === Structs ===
+
 // @dev A wrapper to represent signed integers.
 public struct Int has copy, drop, store { value: u256 }
 
 // === Public View Function ===
+
 /*
- * @notice It returns the inner value inside `self`.
- *
- * @param self The Int struct.
- * @return u256. The inner value.
- */
+* @notice It returns the inner value inside `self`.
+*
+* @param self The Int struct.
+* @return u256. The inner value.
+*/
 public fun value(self: Int): u256 {
     self.value
 }
@@ -46,10 +47,10 @@ public fun value(self: Int): u256 {
 // === Public Create Functions ===
 
 /*
- * @notice It creates a zero `Int`.
- *
- * @return Int. The wrapped value.
- */
+* @notice It creates a zero `Int`.
+*
+* @return Int. The wrapped value.
+*/
 public fun zero(): Int {
     Int { value: 0 }
 }

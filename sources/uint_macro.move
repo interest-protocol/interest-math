@@ -1,4 +1,4 @@
-module interest_math::uint_macro; 
+module interest_math::uint_macro;
 
 // === Try Functions do not throw ===
 
@@ -16,7 +16,6 @@ public(package) macro fun try_add<$T>($x: _, $y: _, $max: u256): (bool, $T) {
     let r = ($x as u256) + ($y as u256);
     if (r > $max) (false, 0) else (true, (r as $T))
 }
-
 
 /*
  * @notice It tries to perform `x` - `y`.
@@ -47,7 +46,9 @@ public(package) macro fun try_mul($x: _, $y: _): (bool, u256) {
     let y = $y as u256;
 
     if (y == 0) return (true, 0);
-    if (x > 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff / y) (false, 0) else (true, x * y)
+    if (
+        x > 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff / y
+    ) (false, 0) else (true, x * y)
 }
 
 /*
