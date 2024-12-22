@@ -18,6 +18,8 @@ const EUnderflow: u64 = 1;
 
 const EDivByZero: u64 = 2;
 
+const EInvalidBitShift: u64 = 3;
+
 // === Structs ===
 
 public enum Compare has copy, drop, store {
@@ -245,6 +247,8 @@ public fun not(self: I64): I64 {
 }
 
 public fun shr(self: I64, rhs: u8): I64 {
+    assert!(rhs < 64, EInvalidBitShift);
+
     if (rhs == 0) return self;
 
     if (self.is_positive()) {
@@ -255,6 +259,8 @@ public fun shr(self: I64, rhs: u8): I64 {
 }
 
 public fun shl(self: I64, lhs: u8): I64 {
+    assert!(lhs < 64, EInvalidBitShift);
+
     I64 { value: self.value << lhs }
 }
 
