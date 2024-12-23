@@ -289,7 +289,7 @@ fun test_add() {
 }
 
 #[test]
-fun testsub() {
+fun test_sub() {
     assert_eq(sub(3, 2), 1);
     assert_eq(sub(3, 3), 0);
 }

@@ -18,6 +18,8 @@ const EUnderflow: u64 = 1;
 
 const EDivByZero: u64 = 2;
 
+const EUndefined: u64 = 3;
+
 // === Structs ===
 
 public enum Compare has copy, drop, store {
@@ -257,6 +259,171 @@ public fun shr(self: I256, rhs: u8): I256 {
 
 public fun shl(self: I256, lhs: u8): I256 {
     I256 { value: self.value << lhs }
+}
+
+// === Fixed Point 18 Decimals Precision ===
+
+// === Logarithmic Functions ===
+
+public fun ln(mut x: I256): I256 {
+    assert!(x.is_positive() && !x.is_zero(), EUndefined);
+
+    let k = from_u8(uint_macro::log2_down!(x.to_u256())).sub(from_u256(96));
+
+    x = x.shl(from_u8(159).sub(k).to_u8());
+    x = from_u256(value(x) >> 159);
+
+    let mut p = x.add(from_u256(3273285459638523848632254066296));
+    p =
+        p
+            .mul(x)
+            .shr(96)
+            .add(
+                from_u256(24828157081833163892658089445524),
+            );
+    p =
+        p
+            .mul(x)
+            .shr(96)
+            .add(
+                from_u256(43456485725739037958740375743393),
+            );
+    p =
+        p
+            .mul(x)
+            .shr(96)
+            .sub(
+                from_u256(11111509109440967052023855526967),
+            );
+    p =
+        p
+            .mul(x)
+            .shr(96)
+            .sub(
+                from_u256(45023709667254063763336534515857),
+            );
+    p =
+        p
+            .mul(x)
+            .shr(96)
+            .sub(
+                from_u256(14706773417378608786704636184526),
+            );
+
+    p = p.mul(x).sub(from_u256(795164235651350426258249787498 << 96));
+
+    let mut q = x.add(from_u256(5573035233440673466300451813936));
+
+    q =
+        q
+            .mul(x)
+            .shr(96)
+            .add(
+                from_u256(71694874799317883764090561454958),
+            );
+    q =
+        q
+            .mul(x)
+            .shr(96)
+            .add(
+                from_u256(283447036172924575727196451306956),
+            );
+    q =
+        q
+            .mul(x)
+            .shr(96)
+            .add(
+                from_u256(401686690394027663651624208769553),
+            );
+    q =
+        q
+            .mul(x)
+            .shr(96)
+            .add(
+                from_u256(204048457590392012362485061816622),
+            );
+    q =
+        q
+            .mul(x)
+            .shr(96)
+            .add(
+                from_u256(31853899698501571402653359427138),
+            );
+    q = q.mul(x).shr(96).add(from_u256(909429971244387300277376558375));
+
+    let mut r = p.div(q);
+    r = r.mul(from_u256(1677202110996718588342820967067443963516166));
+    r =
+        r.add(from_u256(
+            16597577552685614221487285958193947469193820559219878177908093499208371,
+        ).mul(
+            k,
+        ));
+    r =
+        r.add(
+            from_u256(
+                600920179829731861736702779321621459595472258049074101567377883020018308,
+            ),
+        );
+
+    r.shr(174)
+}
+
+// === Exponential Functions ===
+
+public fun exp(x: I256): I256 {
+    if (x.lte(negative_from_u256(42139678854452767551))) return zero();
+
+    assert!(x.lt(from_u256(135305999368893231589)), EOverflow);
+
+    let mut x = x.shl(78).div(from_u256(uint_macro::pow!(5, 18)));
+
+    let k = x
+        .shl(96)
+        .div(from_u256(54916777467707473351141471128))
+        .add(from_u256(uint_macro::pow!(2, 95)))
+        .shr(96);
+
+    x = x.sub(k.mul(from_u256(54916777467707473351141471128)));
+
+    let mut y = x.add(from_u256(1346386616545796478920950773328));
+    y =
+        y
+            .mul(x)
+            .shr(96)
+            .add(
+                from_u256(57155421227552351082224309758442),
+            );
+    let mut p = y.add(x).sub(from_u256(94201549194550492254356042504812));
+    p =
+        p
+            .mul(y)
+            .shr(96)
+            .add(
+                from_u256(28719021644029726153956944680412240),
+            );
+    p = p.mul(x).add(from_u256(4385272521454847904659076985693276 << 96));
+
+    let mut q = x.sub(from_u256(2855989394907223263936484059900));
+    q =
+        q
+            .mul(x)
+            .shr(96)
+            .add(
+                from_u256(50020603652535783019961831881945),
+            );
+
+    q = q.mul(x).shr(96).sub(from_u256(533845033583426703283633433725380));
+    q = q.mul(x).shr(96).add(from_u256(3604857256930695427073651918091429));
+    q = q.mul(x).shr(96).sub(from_u256(14423608567350463180887372962807573));
+    q = q.mul(x).shr(96).add(from_u256(26449188498355588339934803723976023));
+
+    let r = p.div(q);
+
+    from_u256(
+        (r.to_u256() * 3822833074963236453042738258902158003155416615667) >>
+            from_u8(195).sub(k).to_u8(),
+    )
 }
 
 // === Private Functions ===
