@@ -30,7 +30,7 @@ use interest_math::i64::{
     truncate_to_u8,
     truncate_to_u16,
     truncate_to_u32,
-    I64,
+    I64
 };
 use sui::test_utils::assert_eq;
 

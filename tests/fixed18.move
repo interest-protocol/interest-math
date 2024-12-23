@@ -2,18 +2,17 @@
 module interest_math::d18_tests;
 
 use interest_math::fixed18::{
-        Self,
-        div_up,
-        mul_up,
-        div_down,
-        mul_down,
-        try_mul_up,
-        try_div_up,
-        try_mul_down,
-        try_div_down,
-        base,
-    };
-    
+    Self,
+    div_up,
+    mul_up,
+    div_down,
+    mul_down,
+    try_mul_up,
+    try_div_up,
+    try_mul_down,
+    try_div_down,
+    base
+};
 use sui::test_utils::assert_eq;
 
 const FIXED_18_BASE: u256 = 1_000_000_000_000_000_000;
@@ -39,14 +38,29 @@ fun test_convert_functions() {
     assert_eq(fixed18::from_raw_u64(3).raw_value(), 3);
     assert_eq(fixed18::from_u64(3).raw_value(), 3 * FIXED_18_BASE);
 
-    assert_eq(fixed18::u64_to_fixed18(3 * 1000000000, 9).raw_value(), 3 * FIXED_18_BASE); 
-    assert_eq(fixed18::u64_to_fixed18(3 * 1000000000, 9).to_u64(9), 3 * 1000000000); 
+    assert_eq(fixed18::u64_to_fixed18(3 * 1000000000, 9).raw_value(), 3 * FIXED_18_BASE);
+    assert_eq(fixed18::u64_to_fixed18(3 * 1000000000, 9).to_u64(9), 3 * 1000000000);
 
-    assert_eq(fixed18::u128_to_fixed18(3 * 1000000000000000000, 18).raw_value(), 3 * FIXED_18_BASE);   
-    assert_eq(fixed18::u128_to_fixed18(3 * 1000000000000000000, 18).to_u128(18), 3 * 1000000000000000000);    
+    assert_eq(fixed18::u128_to_fixed18(3 * 1000000000000000000, 18).raw_value(), 3 * FIXED_18_BASE);
+    assert_eq(
+        fixed18::u128_to_fixed18(3 * 1000000000000000000, 18).to_u128(18),
+        3 * 1000000000000000000,
+    );
 
-    assert_eq(fixed18::u256_to_fixed18(3 * 100000000000000000000000000000000000000000000000000, 50).raw_value(), 3 * FIXED_18_BASE);   
-    assert_eq(fixed18::u256_to_fixed18(3 * 100000000000000000000000000000000000000000000000000, 50).to_u256(50), 3 * 100000000000000000000000000000000000000000000000000);    
+    assert_eq(
+        fixed18::u256_to_fixed18(
+            3 * 100000000000000000000000000000000000000000000000000,
+            50,
+        ).raw_value(),
+        3 * FIXED_18_BASE,
+    );
+    assert_eq(
+        fixed18::u256_to_fixed18(
+            3 * 100000000000000000000000000000000000000000000000000,
+            50,
+        ).to_u256(50),
+        3 * 100000000000000000000000000000000000000000000000000,
+    );
 }
 
 #[test]
@@ -181,14 +195,20 @@ fun test_mul_down() {
     assert_eq(mul_down(333333u256.from_raw(), 21234u256.from_raw()).raw_value(), 0u256);
     // rounds down
 
-    assert_eq(mul_down(0u256.from_raw(), ((FIXED_18_BASE / 10) * 15).from_raw()).raw_value(), 0u256);
+    assert_eq(
+        mul_down(0u256.from_raw(), ((FIXED_18_BASE / 10) * 15).from_raw()).raw_value(),
+        0u256,
+    );
 }
 
 #[test]
 fun test_mul_up() {
     assert_eq(mul_up(3u256.from(), 5u256.from()).raw_value(), 15 * FIXED_18_BASE);
 
-    assert_eq(mul_up(3u256.from(), ((FIXED_18_BASE / 10) * 15).from_raw()).raw_value(), 45 * FIXED_18_BASE / 10);
+    assert_eq(
+        mul_up(3u256.from(), ((FIXED_18_BASE / 10) * 15).from_raw()).raw_value(),
+        45 * FIXED_18_BASE / 10,
+    );
 
     assert_eq(mul_up(333333u256.from_raw(), 21234u256.from_raw()).raw_value(), 1);
     // rounds up
@@ -200,14 +220,20 @@ fun test_mul_up() {
 fun test_div_down() {
     assert_eq(div_down(3u256.from(), 5u256.from()).raw_value(), 6 * FIXED_18_BASE / 10);
 
-    assert_eq(div_down(3u256.from(), ((FIXED_18_BASE / 10) * 15).from_raw()).raw_value(), 2 * FIXED_18_BASE);
+    assert_eq(
+        div_down(3u256.from(), ((FIXED_18_BASE / 10) * 15).from_raw()).raw_value(),
+        2 * FIXED_18_BASE,
+    );
     //
 
     assert_eq(div_down(7u256.from(), 2u256.from()).raw_value(), 35 * FIXED_18_BASE / 10);
 
     assert_eq(div_down(0u256.from(), ((FIXED_18_BASE / 10) * 15).from_raw()).raw_value(), 0);
 
-    assert_eq(div_down(333333333u256.from(), 222222221u256.from()).raw_value(), 1500000006750000037);
+    assert_eq(
+        div_down(333333333u256.from(), 222222221u256.from()).raw_value(),
+        1500000006750000037,
+    );
     // rounds down
 }
 
@@ -215,7 +241,10 @@ fun test_div_down() {
 fun test_div_up() {
     assert_eq(div_up(3u256.from(), 5u256.from()).raw_value(), 6 * FIXED_18_BASE / 10);
 
-    assert_eq(div_up(3u256.from(), ((FIXED_18_BASE / 10) * 15).from_raw()).raw_value(), 2 * FIXED_18_BASE);
+    assert_eq(
+        div_up(3u256.from(), ((FIXED_18_BASE / 10) * 15).from_raw()).raw_value(),
+        2 * FIXED_18_BASE,
+    );
     //
 
     assert_eq(div_up(7u256.from(), 2u256.from()).raw_value(), 35 * FIXED_18_BASE / 10);

@@ -749,12 +749,12 @@ fun test_shl() {
     assert_eq(from_u32(0xFF).shl(24).value(), 0xFF000000);
 }
 
-#[test,expected_failure(abort_code = i32::EInvalidBitShift, location = i32)]
+#[test, expected_failure(abort_code = i32::EInvalidBitShift, location = i32)]
 fun test_shl_overflow() {
     from_u32(1).shl(32);
 }
 
-#[test,expected_failure(abort_code = i32::EInvalidBitShift, location = i32)]
+#[test, expected_failure(abort_code = i32::EInvalidBitShift, location = i32)]
 fun test_shr_overflow() {
     from_u32(1).shr(32);
 }

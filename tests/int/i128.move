@@ -31,7 +31,7 @@ use interest_math::i128::{
     truncate_to_u16,
     truncate_to_u32,
     truncate_to_u64,
-    I128,
+    I128
 };
 use sui::test_utils::assert_eq;
 

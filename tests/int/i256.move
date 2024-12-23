@@ -1,40 +1,42 @@
 #[test_only]
 module interest_math::i256_tests;
 
-use interest_math::i256::{
-    Self,
-    or,
-    eq,
-    lt,
-    gt,
-    pow,
-    lte,
-    gte,
-    mul,
-    shl,
-    shr,
-    abs,
-    mod,
-    add,
-    sub,
-    and,
-    zero,
-    value,
-    div_up,
-    is_negative,
-    is_zero,
-    div,
-    from_u256,
-    is_positive,
-    negative_from_u256,
-    truncate_to_u8,
-    truncate_to_u16,
-    truncate_to_u32,
-    truncate_to_u64,
-    truncate_to_u128,
-    I256,
+use interest_math::{
+    i256::{
+        Self,
+        or,
+        eq,
+        lt,
+        gt,
+        pow,
+        lte,
+        gte,
+        mul,
+        shl,
+        shr,
+        abs,
+        mod,
+        add,
+        sub,
+        and,
+        zero,
+        value,
+        div_up,
+        is_negative,
+        is_zero,
+        div,
+        from_u256,
+        is_positive,
+        negative_from_u256,
+        truncate_to_u8,
+        truncate_to_u16,
+        truncate_to_u32,
+        truncate_to_u64,
+        truncate_to_u128,
+        I256
+    },
+    u256
 };
-use interest_math::u256;
 use sui::test_utils::assert_eq;
 
 const POW_18: u256 = 1_000_000_000_000_000_000;
@@ -492,7 +494,10 @@ fun test_exp() {
 
     assert_eq(i256::from_u256(10 * POW_18).exp().value(), 220264657948067165169_80);
 
-    assert_eq(i256::from_u256(50 * POW_18).exp().value(), 5184705528587072464_148529318587763226117);
+    assert_eq(
+        i256::from_u256(50 * POW_18).exp().value(),
+        5184705528587072464_148529318587763226117,
+    );
 
     assert_eq(
         i256::from_u256(100 * POW_18).exp().value(),
