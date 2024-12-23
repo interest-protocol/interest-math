@@ -6,6 +6,8 @@ use interest_math::uint_macro as macro;
 
 const FIXED_18_BASE: u256 = 1_000_000_000_000_000_000;
 
+const MAX_U256: u256 = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+
 // === Structs ===
 
 public struct Fixed18 has copy, drop, store { value: u256 }
@@ -102,23 +104,33 @@ public fun u256_to_fixed18_up(x: u256, decimals: u8): Fixed18 {
 
 // === Try Functions ===
 
+public fun try_add(x: Fixed18, y: Fixed18): (bool, Fixed18) {
+    let (pred, value) = macro::try_add!(x.value, y.value, MAX_U256);
+    (pred, Fixed18 { value })
+}
+
+public fun try_sub(x: Fixed18, y: Fixed18): (bool, Fixed18) {
+    let (pred, value) = macro::try_sub!(x.value, y.value);
+    (pred, Fixed18 { value })
+}
+
 public fun try_mul_down(x: Fixed18, y: Fixed18): (bool, Fixed18) {
-    let (pred, value) = macro::try_mul_div_down!(x.value, y.value, FIXED_18_BASE);
+    let (pred, value) = macro::try_mul_div_down!(x.value, y.value, FIXED_18_BASE, MAX_U256);
     (pred, Fixed18 { value })
 }
 
 public fun try_mul_up(x: Fixed18, y: Fixed18): (bool, Fixed18) {
-    let (pred, value) = macro::try_mul_div_up!(x.value, y.value, FIXED_18_BASE);
+    let (pred, value) = macro::try_mul_div_up!(x.value, y.value, FIXED_18_BASE, MAX_U256);
     (pred, Fixed18 { value })
 }
 
 public fun try_div_down(x: Fixed18, y: Fixed18): (bool, Fixed18) {
-    let (pred, value) = macro::try_mul_div_down!(x.value, FIXED_18_BASE, y.value);
+    let (pred, value) = macro::try_mul_div_down!(x.value, FIXED_18_BASE, y.value, MAX_U256);
     (pred, Fixed18 { value })
 }
 
 public fun try_div_up(x: Fixed18, y: Fixed18): (bool, Fixed18) {
-    let (pred, value) = macro::try_mul_div_up!(x.value, FIXED_18_BASE, y.value);
+    let (pred, value) = macro::try_mul_div_up!(x.value, FIXED_18_BASE, y.value, MAX_U256);
     (pred, Fixed18 { value })
 }
 

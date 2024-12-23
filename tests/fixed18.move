@@ -14,6 +14,8 @@ use interest_math::fixed18::{
     base,
     add,
     sub,
+    try_add,
+    try_sub
 };
 use sui::test_utils::assert_eq;
 
@@ -73,6 +75,28 @@ fun test_convert_functions() {
         ).to_u256(50),
         3 * 100000000000000000000000000000000000000000000000000,
     );
+}
+
+#[test]
+fun test_try_add() {
+    let (pred, r) = try_add(3u256.from(), 5u256.from());
+    assert_eq(pred, true);
+    assert_eq(r.raw_value(), 8 * FIXED_18_BASE);
+
+    let (pred, r) = try_add(MAX_U256.from_raw(), MAX_U256.from_raw());
+    assert_eq(pred, false);
+    assert_eq(r.raw_value(), 0);
+}
+
+#[test]
+fun test_try_sub() {
+    let (pred, r) = try_sub(5u256.from(), 3u256.from());
+    assert_eq(pred, true);
+    assert_eq(r.raw_value(), 2 * FIXED_18_BASE);
+
+    let (pred, r) = try_sub(3u256.from(), 5u256.from());
+    assert_eq(pred, false);
+    assert_eq(r.raw_value(), 0);
 }
 
 #[test]

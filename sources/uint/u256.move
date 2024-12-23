@@ -2,7 +2,7 @@ module interest_math::u256;
 
 use interest_math::uint_macro as macro;
 
-// === Constants === 
+// === Constants ===
 
 const MAX_U256: u256 = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
@@ -22,7 +22,7 @@ public fun try_sub(x: u256, y: u256): (bool, u256) {
 }
 
 public fun try_mul(x: u256, y: u256): (bool, u256) {
-    macro::try_mul!(x, y)
+    macro::try_mul!(x, y, MAX_U256)
 }
 
 public fun try_div_down(x: u256, y: u256): (bool, u256) {
@@ -34,11 +34,11 @@ public fun try_div_up(x: u256, y: u256): (bool, u256) {
 }
 
 public fun try_mul_div_down(x: u256, y: u256, z: u256): (bool, u256) {
-    macro::try_mul_div_down!(x, y, z)
+    macro::try_mul_div_down!(x, y, z, MAX_U256)
 }
 
 public fun try_mul_div_up(x: u256, y: u256, z: u256): (bool, u256) {
-    macro::try_mul_div_up!(x, y, z)
+    macro::try_mul_div_up!(x, y, z, MAX_U256)
 }
 
 public fun try_mod(x: u256, y: u256): (bool, u256) {

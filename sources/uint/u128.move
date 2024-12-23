@@ -17,8 +17,8 @@ public fun try_sub(x: u128, y: u128): (bool, u128) {
 }
 
 public fun try_mul(x: u128, y: u128): (bool, u128) {
-    let (pred, c) = macro::try_mul!(x, y);
-    if (!pred || c > MAX_U128) (false, 0) else (true, (c as u128))
+    let (pred, r) = macro::try_mul!(x, y, MAX_U128);
+    (pred, r as u128)
 }
 
 public fun try_div_down(x: u128, y: u128): (bool, u128) {
@@ -30,13 +30,11 @@ public fun try_div_up(x: u128, y: u128): (bool, u128) {
 }
 
 public fun try_mul_div_down(x: u128, y: u128, z: u128): (bool, u128) {
-    let (pred, r) = macro::try_mul_div_down!(x, y, z);
-    if (!pred || r > MAX_U128) (false, 0) else (true, (r as u128))
+    macro::try_mul_div_down!(x, y, z, MAX_U128)
 }
 
 public fun try_mul_div_up(x: u128, y: u128, z: u128): (bool, u128) {
-    let (pred, r) = macro::try_mul_div_up!(x, y, z);
-    if (!pred || r > MAX_U128) (false, 0) else (true, (r as u128))
+    macro::try_mul_div_up!(x, y, z, MAX_U128)
 }
 
 public fun try_mod(x: u128, y: u128): (bool, u128) {

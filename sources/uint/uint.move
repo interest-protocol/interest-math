@@ -1,22 +1,31 @@
 module interest_math::uint_macro;
 
 public(package) macro fun try_add<$T>($x: _, $y: _, $max: u256): (bool, $T) {
-    let r = ($x as u256) + ($y as u256);
-    if (r > $max) (false, 0) else (true, (r as $T))
+    let x = $x as u256;
+    let y = $y as u256;
+    let max = $max as u256;
+
+    if (x == max && y != 0) return (false, 0 as $T);
+
+    let rem = max - x;
+    if (y > rem) return (false, 0 as $T);
+
+    (true, (x + y) as $T)
 }
 
 public(package) macro fun try_sub($x: _, $y: _): (bool, _) {
     if ($y > $x) (false, 0) else (true, $x - $y)
 }
 
-public(package) macro fun try_mul($x: _, $y: _): (bool, u256) {
+public(package) macro fun try_mul($x: _, $y: _, $max: u256): (bool, u256) {
     let x = $x as u256;
     let y = $y as u256;
+    let max = $max as u256;
 
     if (y == 0) return (true, 0);
-    if (
-        x > 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff / y
-    ) (false, 0) else (true, x * y)
+    if (x > max / y) return (false, 0);
+
+    (true, (x * y))
 }
 
 public(package) macro fun try_div_down($x: _, $y: _): (bool, _) {
@@ -27,28 +36,46 @@ public(package) macro fun try_div_up($x: _, $y: _): (bool, _) {
     if ($y == 0) (false, 0) else (true, div_up!($x, $y))
 }
 
-public(package) macro fun try_mul_div_down($x: _, $y: _, $z: _): (bool, u256) {
+public(package) macro fun try_mul_div_down<$T>($x: _, $y: _, $z: _, $max: u256): (bool, $T) {
     let x = $x as u256;
     let y = $y as u256;
     let z = $z as u256;
+    let max = $max as u256;
 
-    if (z == 0) return (false, 0);
-    let (pred, _) = try_mul!(x, y);
-    if (!pred) return (false, 0);
+    if (z == 0) return (false, 0 as $T);
+    let (pred, _) = try_mul!(
+        x,
+        y,
+        0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff,
+    );
+    if (!pred) return (false, 0 as $T);
 
-    (true, mul_div_down!<u256>(x, y, z))
+    let r = mul_div_down!<u256>(x, y, z);
+
+    if (r > max) return (false, 0 as $T);
+
+    (true, r as $T)
 }
 
-public(package) macro fun try_mul_div_up($x: _, $y: _, $z: _): (bool, u256) {
+public(package) macro fun try_mul_div_up<$T>($x: _, $y: _, $z: _, $max: u256): (bool, $T) {
     let x = $x as u256;
     let y = $y as u256;
     let z = $z as u256;
+    let max = $max as u256;
 
-    if (z == 0) return (false, 0);
-    let (pred, _) = try_mul!(x, y);
-    if (!pred) return (false, 0);
+    if (z == 0) return (false, 0 as $T);
+    let (pred, _) = try_mul!(
+        x,
+        y,
+        0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff,
+    );
+    if (!pred) return (false, 0 as $T);
 
-    (true, mul_div_up!<u256>(x, y, z))
+    let r = mul_div_up!<u256>(x, y, z);
+
+    if (r > max) return (false, 0 as $T);
+
+    (true, r as $T)
 }
 
 public(package) macro fun try_mod($x: _, $y: _): (bool, _) {
