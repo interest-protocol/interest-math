@@ -15,8 +15,8 @@
 
 ## Immutable
 
-[The package is immutable](https://testnet.suivision.xyz/txblock/5eZ4W4JySQkVpCoZLsjoGxmtHbzqMcVp17akGzKKDTDz)
+[The package is immutable (Testnet)](https://testnet.suivision.xyz/txblock/68bciNoJVtyPWUUwf4f46YuF6FTdq2cECrqE3FFT2wLm)
 
-## Testnet Code
+## Code
 
-[Explorer](https://testnet.suivision.xyz/package/0xb4939698f1873771901021b5435569dadfd4e4d82d8d1005f30fa9771687d006?tab=Code)
+[Testnet Explorer](https://testnet.suivision.xyz/package/0xde8557f3d1cba4b3af727ab0c2d1410dc4e52fb46d5baf46daf457a1fc67430c?tab=Code)
