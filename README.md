@@ -9,6 +9,7 @@
 -   `u128`: Utility functions for u128.
 -   `u256`: Utility functions for u256.
 -   `i32`: Utility functions for i32.
+-   `i64`: Utility functions for i64.
 -   `i128`: Utility functions for i128.
 -   `i256`: Utility functions for i256.
 
