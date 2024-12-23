@@ -1,6 +1,6 @@
 # Interest Math
 
-## It provides fixed point arithmetic for interest calculations.
+## A set of math libraries used by Interest Protocol.
 
 ### It contains the following modules:
 
