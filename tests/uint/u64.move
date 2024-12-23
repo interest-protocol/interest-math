@@ -1,7 +1,7 @@
 #[test_only]
-module interest_math::u256_tests;
+module interest_math::u64_tests;
 
-use interest_math::u256::{
+use interest_math::u64::{
     add,
     sub,
     min,
@@ -30,15 +30,71 @@ use interest_math::u256::{
     log256_down,
     try_div_down,
     mul_div_down,
+    wrapping_add,
+    wrapping_mul,
+    wrapping_sub,
     try_mul_div_up,
     average_vector,
     try_mul_div_down
 };
 use sui::test_utils::assert_eq;
 
-const MAX_U256: u256 = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
-const MIN: u256 = 1234;
-const MAX: u256 = 5678;
+const MAX_U64: u64 = 18446744073709551615;
+const MIN: u64 = 1234;
+const MAX: u64 = 5678;
+
+#[test]
+fun test_wrapping_add() {
+    assert_eq(wrapping_add(50, 75), 125);
+    assert_eq(wrapping_add(0, 100), 100);
+
+    let x = pow(2, 17);
+    let y = pow(2, 15);
+
+    assert_eq(wrapping_add(x, y), x + y);
+
+    assert_eq(wrapping_add(456, 789), 1245);
+    assert_eq(wrapping_add(MAX_U64, 1), 0);
+
+    let x = pow(2, 63) - 1;
+
+    assert_eq(wrapping_add(x, 100), 9223372036854775907);
+    assert_eq(wrapping_add(MAX_U64, 2), 1);
+    assert_eq(wrapping_add(MAX_U64, MAX_U64), 18446744073709551614);
+    assert_eq(wrapping_add(MAX_U64 - 5, 10), 4);
+    assert_eq(wrapping_add(MAX_U64, 0), MAX_U64);
+}
+
+#[test]
+fun test_wrapping_mul() {
+    assert_eq(wrapping_mul(50, 75), 3750);
+    assert_eq(wrapping_mul(0, 100), 0);
+
+    let x = pow(2, 17);
+    let y = pow(2, 15);
+
+    assert_eq(wrapping_mul(x, y), x * y);
+
+    assert_eq(wrapping_mul(456, 789), 359784);
+    assert_eq(wrapping_mul(MAX_U64, 1), MAX_U64);
+
+    let x = pow(2, 50) - 1;
+
+    assert_eq(wrapping_mul(x, 10), x * 10);
+    assert_eq(wrapping_mul(MAX_U64, 2), 18446744073709551614);
+    assert_eq(wrapping_mul(MAX_U64, MAX_U64), 1);
+    assert_eq(wrapping_mul(MAX_U64, 10), 18446744073709551606);
+    assert_eq(wrapping_mul(MAX_U64, 0), 0);
+}
+
+#[test]
+fun test_wrapping_sub() {
+    assert_eq(wrapping_sub(0, 0), 0);
+    assert_eq(wrapping_sub(0, 1), MAX_U64);
+    assert_eq(wrapping_sub(0, MAX_U64), 1);
+    assert_eq(wrapping_sub(3, 1), 2);
+    assert_eq(wrapping_sub(3, MAX_U64), 4);
+}
 
 #[test]
 fun test_try_add() {
@@ -46,7 +102,7 @@ fun test_try_add() {
     assert_eq(pred, true);
     assert_eq(result, 5678 + 1234);
 
-    let (pred, result) = try_add(MAX_U256, 1);
+    let (pred, result) = try_add(MAX_U64, 1);
     assert_eq(pred, false);
     assert_eq(result, 0);
 }
@@ -72,7 +128,7 @@ fun test_try_mul() {
     assert_eq(pred, true);
     assert_eq(result, 0);
 
-    let (pred, result) = try_mul((MAX_U256 / 2) + 1, 2);
+    let (pred, result) = try_mul((MAX_U64 / 2) + 1, 2);
     assert_eq(pred, false);
     assert_eq(result, 0);
 }
@@ -121,9 +177,9 @@ fun test_try_mul_div_down() {
     assert_eq(pred, true);
     assert_eq(result, 5);
 
-    let (pred, result) = try_mul_div_down((MAX_U256 / 2) + 1, 2, 4);
-    assert_eq(pred, false);
-    assert_eq(result, 0);
+    let (pred, result) = try_mul_div_down((MAX_U64 / 2) + 1, 2, 4);
+    assert_eq(pred, true);
+    assert_eq(result, 4611686018427387904);
 
     let (pred, result) = try_mul_div_down(10, 2, 0);
     assert_eq(pred, false);
@@ -132,6 +188,10 @@ fun test_try_mul_div_down() {
     let (pred, result) = try_mul_div_down(1, 7, 2);
     assert_eq(pred, true);
     assert_eq(result, 3);
+
+    let (pred, result) = try_mul_div_down(MAX_U64, 2, 2);
+    assert_eq(pred, true);
+    assert_eq(result, MAX_U64);
 }
 
 #[test]
@@ -140,9 +200,9 @@ fun test_try_mul_div_up() {
     assert_eq(pred, true);
     assert_eq(result, 5);
 
-    let (pred, result) = try_mul_div_up((MAX_U256 / 2) + 1, 2, 4);
-    assert_eq(pred, false);
-    assert_eq(result, 0);
+    let (pred, result) = try_mul_div_up((MAX_U64 / 2) + 1, 2, 4);
+    assert_eq(pred, true);
+    assert_eq(result, 4611686018427387904);
 
     let (pred, result) = try_mul_div_up(10, 2, 0);
     assert_eq(pred, false);
@@ -229,7 +289,7 @@ fun test_add() {
 }
 
 #[test]
-fun testsub() {
+fun test_sub() {
     assert_eq(sub(3, 2), 1);
     assert_eq(sub(3, 3), 0);
 }
@@ -244,8 +304,8 @@ fun test_div_down() {
     assert_eq(div_down(0, 2), 0);
     assert_eq(div_down(10, 5), 2);
     assert_eq(div_down(43, 13), 3);
-    assert_eq(div_down(MAX_U256, 2), (1 << 255) - 1);
-    assert_eq(div_down(MAX_U256, 1), MAX_U256);
+    assert_eq(div_down(MAX_U64, 2), (1 << 63) - 1);
+    assert_eq(div_down(MAX_U64, 1), MAX_U64);
 }
 
 #[test]
@@ -253,8 +313,8 @@ fun test_div_up() {
     assert_eq(div_up(0, 2), 0);
     assert_eq(div_up(10, 5), 2);
     assert_eq(div_up(43, 13), 4);
-    assert_eq(div_up(MAX_U256, 2), 1 << 255);
-    assert_eq(div_up(MAX_U256, 1), MAX_U256);
+    assert_eq(div_up(MAX_U64, 2), 1 << 63);
+    assert_eq(div_up(MAX_U64, 1), MAX_U64);
 }
 
 #[test]
@@ -281,7 +341,7 @@ fun test_pow() {
     assert_eq(pow(3, 1), 3);
     assert_eq(pow(1, 10), 1);
     assert_eq(pow(2, 4), 16);
-    assert_eq(pow(2, 100), 1267650600228229401496703205376);
+    assert_eq(pow(2, 63), 9223372036854775808);
 }
 
 #[test]
@@ -308,7 +368,7 @@ fun test_sqrt_down() {
     assert_eq(sqrt_down(1002000), 1000);
     assert_eq(sqrt_down(1002001), 1001);
     assert_eq(sqrt_down(1002001), 1001);
-    assert_eq(sqrt_down(MAX_U256), 340282366920938463463374607431768211455);
+    assert_eq(sqrt_down(MAX_U64), 4294967295);
 }
 
 #[test]
@@ -325,7 +385,7 @@ fun test_sqrt_up() {
     assert_eq(sqrt_up(1002000), 1001);
     assert_eq(sqrt_up(1002001), 1001);
     assert_eq(sqrt_up(1002001), 1001);
-    assert_eq(sqrt_up(MAX_U256), 340282366920938463463374607431768211456);
+    assert_eq(sqrt_up(MAX_U64), 4294967296);
 }
 
 #[test]
@@ -340,7 +400,7 @@ fun test_log2_down() {
     assert_eq(log2_down(7), 2);
     assert_eq(log2_down(8), 3);
     assert_eq(log2_down(9), 3);
-    assert_eq(log2_down(MAX_U256), 255);
+    assert_eq(log2_down(MAX_U64), 63);
 }
 
 #[test]
@@ -355,7 +415,7 @@ fun test_log2_up() {
     assert_eq(log2_up(7), 3);
     assert_eq(log2_up(8), 3);
     assert_eq(log2_up(9), 4);
-    assert_eq(log2_up(MAX_U256), 256);
+    assert_eq(log2_up(MAX_U64), 64);
 }
 
 #[test]
@@ -372,7 +432,7 @@ fun test_log10_down() {
     assert_eq(log10_down(999), 2);
     assert_eq(log10_down(1000), 3);
     assert_eq(log10_down(1001), 3);
-    assert_eq(log10_down(MAX_U256), 77);
+    assert_eq(log10_down(MAX_U64), 19);
 }
 #[test]
 fun test_log10_up() {
@@ -388,7 +448,7 @@ fun test_log10_up() {
     assert_eq(log10_up(999), 3);
     assert_eq(log10_up(1000), 3);
     assert_eq(log10_up(1001), 4);
-    assert_eq(log10_up(MAX_U256), 78);
+    assert_eq(log10_up(MAX_U64), 20);
 }
 
 #[test]
@@ -402,7 +462,7 @@ fun test_log256_down() {
     assert_eq(log256_down(65535), 1);
     assert_eq(log256_down(65536), 2);
     assert_eq(log256_down(65547), 2);
-    assert_eq(log256_down(MAX_U256), 31);
+    assert_eq(log256_down(MAX_U64), 7);
 }
 
 #[test]
@@ -416,7 +476,7 @@ fun test_log256_up() {
     assert_eq(log256_up(65535), 2);
     assert_eq(log256_up(65536), 2);
     assert_eq(log256_up(65547), 3);
-    assert_eq(log256_up(MAX_U256), 32);
+    assert_eq(log256_up(MAX_U64), 8);
 }
 
 #[test]
@@ -434,5 +494,5 @@ fun test_div_down_zero_division() {
 #[test]
 #[expected_failure]
 fun test_mul_overflow() {
-    mul(MAX_U256, 2);
+    mul(MAX_U64, 2);
 }
