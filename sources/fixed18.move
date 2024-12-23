@@ -70,32 +70,32 @@ public fun to_u64_up(x: Fixed18, decimals: u8): u64 {
     value as u64
 }
 
-public fun u64_to_d18(x: u64, decimals: u8): Fixed18 {
+public fun u64_to_fixed18(x: u64, decimals: u8): Fixed18 {
     let value = macro::mul_div_up!(x, FIXED_18_BASE, macro::pow!<u256>(10, decimals));
     Fixed18 { value }
 }
 
-public fun u128_to_d18(x: u128, decimals: u8): Fixed18 {
+public fun u128_to_fixed18(x: u128, decimals: u8): Fixed18 {
     let value = macro::mul_div_up!((x as u256), FIXED_18_BASE, macro::pow!<u256>(10, decimals));
     Fixed18 { value }
 }
 
-public fun u256_to_d18(x: u256, decimals: u8): Fixed18 {
+public fun u256_to_fixed18(x: u256, decimals: u8): Fixed18 {
     let value = macro::mul_div_up!(x, FIXED_18_BASE, macro::pow!<u256>(10, decimals));
     Fixed18 { value }
 }
 
-public fun u64_to_d18_up(x: u64, decimals: u8): Fixed18 {
+public fun u64_to_fixed18_up(x: u64, decimals: u8): Fixed18 {
     let value = macro::mul_div_up!((x as u256), FIXED_18_BASE, macro::pow!<u256>(10, decimals));
     Fixed18 { value }
 }
 
-public fun u128_to_d18_up(x: u128, decimals: u8): Fixed18 {
+public fun u128_to_fixed18_up(x: u128, decimals: u8): Fixed18 {
     let value = macro::mul_div_up!((x as u256), FIXED_18_BASE, macro::pow!<u256>(10, decimals));
     Fixed18 { value }
 }
 
-public fun u256_to_d18_up(x: u256, decimals: u8): Fixed18 {
+public fun u256_to_fixed18_up(x: u256, decimals: u8): Fixed18 {
     let value = macro::mul_div_up!(x, FIXED_18_BASE, macro::pow!<u256>(10, decimals));
     Fixed18 { value }
 }

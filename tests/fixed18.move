@@ -39,14 +39,14 @@ fun test_convert_functions() {
     assert_eq(fixed18::from_raw_u64(3).raw_value(), 3);
     assert_eq(fixed18::from_u64(3).raw_value(), 3 * FIXED_18_BASE);
 
-    assert_eq(fixed18::u64_to_d18(3 * 1000000000, 9).raw_value(), 3 * FIXED_18_BASE); 
-    assert_eq(fixed18::u64_to_d18(3 * 1000000000, 9).to_u64(9), 3 * 1000000000); 
+    assert_eq(fixed18::u64_to_fixed18(3 * 1000000000, 9).raw_value(), 3 * FIXED_18_BASE); 
+    assert_eq(fixed18::u64_to_fixed18(3 * 1000000000, 9).to_u64(9), 3 * 1000000000); 
 
-    assert_eq(fixed18::u128_to_d18(3 * 1000000000000000000, 18).raw_value(), 3 * FIXED_18_BASE);   
-    assert_eq(fixed18::u128_to_d18(3 * 1000000000000000000, 18).to_u128(18), 3 * 1000000000000000000);    
+    assert_eq(fixed18::u128_to_fixed18(3 * 1000000000000000000, 18).raw_value(), 3 * FIXED_18_BASE);   
+    assert_eq(fixed18::u128_to_fixed18(3 * 1000000000000000000, 18).to_u128(18), 3 * 1000000000000000000);    
 
-    assert_eq(fixed18::u256_to_d18(3 * 100000000000000000000000000000000000000000000000000, 50).raw_value(), 3 * FIXED_18_BASE);   
-    assert_eq(fixed18::u256_to_d18(3 * 100000000000000000000000000000000000000000000000000, 50).to_u256(50), 3 * 100000000000000000000000000000000000000000000000000);    
+    assert_eq(fixed18::u256_to_fixed18(3 * 100000000000000000000000000000000000000000000000000, 50).raw_value(), 3 * FIXED_18_BASE);   
+    assert_eq(fixed18::u256_to_fixed18(3 * 100000000000000000000000000000000000000000000000000, 50).to_u256(50), 3 * 100000000000000000000000000000000000000000000000000);    
 }
 
 #[test]
@@ -227,10 +227,17 @@ fun test_div_up() {
 }
 
 #[test]
-fun test_to_d18() {
-    assert_eq(fixed18::u256_to_d18(FIXED_18_BASE, 18).raw_value(), FIXED_18_BASE);
-    assert_eq(fixed18::u256_to_d18(2, 1).raw_value(), 2 * FIXED_18_BASE / 10);
-    assert_eq(fixed18::u256_to_d18(20 * FIXED_18_BASE, 18).raw_value(), 20 * FIXED_18_BASE);
+fun test_to_fixed18() {
+    assert_eq(fixed18::u256_to_fixed18(FIXED_18_BASE, 18).raw_value(), FIXED_18_BASE);
+    assert_eq(fixed18::u256_to_fixed18(2, 1).raw_value(), 2 * FIXED_18_BASE / 10);
+    assert_eq(fixed18::u256_to_fixed18(20 * FIXED_18_BASE, 18).raw_value(), 20 * FIXED_18_BASE);
+
+    assert_eq(fixed18::u256_to_fixed18_up(FIXED_18_BASE, 18).raw_value(), FIXED_18_BASE);
+    assert_eq(fixed18::u256_to_fixed18_up(2, 1).raw_value(), (2 * FIXED_18_BASE + 9) / 10);
+    assert_eq(fixed18::u256_to_fixed18_up(20 * FIXED_18_BASE, 18).raw_value(), 20 * FIXED_18_BASE);
+
+    assert_eq(fixed18::u64_to_fixed18_up(2, 1).raw_value(), (2 * FIXED_18_BASE + 9) / 10);
+    assert_eq(fixed18::u128_to_fixed18_up(2, 1).raw_value(), (2 * FIXED_18_BASE + 9) / 10);
 }
 
 #[test]
