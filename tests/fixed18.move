@@ -11,7 +11,9 @@ use interest_math::fixed18::{
     try_div_up,
     try_mul_down,
     try_div_down,
-    base
+    base,
+    add,
+    sub,
 };
 use sui::test_utils::assert_eq;
 
@@ -25,6 +27,16 @@ use fun fixed18::from_u256 as u256.from;
 #[test]
 fun test_scalar() {
     assert_eq(base(), FIXED_18_BASE);
+}
+
+#[test]
+fun test_add() {
+    assert_eq(add(3u256.from_raw(), 5u256.from_raw()).raw_value(), 8);
+}
+
+#[test]
+fun test_sub() {
+    assert_eq(sub(5u256.from_raw(), 3u256.from_raw()).raw_value(), 2);
 }
 
 #[test]

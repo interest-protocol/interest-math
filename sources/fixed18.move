@@ -124,6 +124,14 @@ public fun try_div_up(x: Fixed18, y: Fixed18): (bool, Fixed18) {
 
 // === Arithmetic Functions ===
 
+public fun add(x: Fixed18, y: Fixed18): Fixed18 {
+    Fixed18 { value: x.value + y.value }
+}
+
+public fun sub(x: Fixed18, y: Fixed18): Fixed18 {
+    Fixed18 { value: x.value - y.value }
+}
+
 public fun mul_down(x: Fixed18, y: Fixed18): Fixed18 {
     let value = macro::mul_div_down!(x.value, y.value, FIXED_18_BASE);
     Fixed18 { value }
