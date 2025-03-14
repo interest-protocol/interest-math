@@ -164,8 +164,45 @@ public fun div_up(x: Fixed18, y: Fixed18): Fixed18 {
     Fixed18 { value }
 }
 
+// === Comparison Functions ===
+
+/// Check if a is greater than b
+public fun gt(a: Fixed18, b: Fixed18): bool {
+    a.value > b.value
+}
+
+/// Check if a is less than b
+public fun lt(a: Fixed18, b: Fixed18): bool {
+    a.value < b.value
+}
+
+/// Check if a is greater than or equal to b
+public fun gte(a: Fixed18, b: Fixed18): bool {
+    a.value >= b.value
+}
+
+/// Check if a is less than or equal to b
+public fun lte(a: Fixed18, b: Fixed18): bool {
+    a.value <= b.value
+}
+
+/// Check if value is zero
+public fun is_zero(value: Fixed18): bool {
+    value.value == 0
+}
+
 // === Utility Functions ===
 
 public fun base(): u256 {
     FIXED_18_BASE
+}
+
+/// Zero value in Fixed18 format
+public fun zero(): Fixed18 {
+    Fixed18 { value: 0 }
+}
+
+/// One value in Fixed18 format
+public fun one(): Fixed18 {
+    Fixed18 { value: FIXED_18_BASE }
 }
